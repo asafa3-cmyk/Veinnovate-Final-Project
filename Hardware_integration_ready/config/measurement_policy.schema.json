@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stage 16 Alternative 2 timing policy v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "scheduled_interval_s", "capture_deadline_s"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "policy_id": {"const": "STAGE16-ALTERNATIVE2-v1"},
+    "scheduled_interval_s": {"type": "number", "exclusiveMinimum": 35},
+    "capture_deadline_s": {"type": "number", "minimum": 35}
+  }
+}

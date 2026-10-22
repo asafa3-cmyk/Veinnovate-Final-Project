@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "policy": "experimental-command7-repeat-1.0.0",
+  "minimum_firmware_status_version": "3.0.1",
+  "warmup_policy": "experimental-active-sensor-warmup-1.0.0",
+  "start_command": 7,
+  "start_arg0": 1,
+  "profile": 25,
+  "clean_idle_config_semantics": "verified selected profile; sensor SHDN asserted, LED amplitudes zero; START reapplies/readbacks before wake",
+  "retain_selection_only_if": "FINAL v2 outcome 0, 500 warm-up and 3000 measurement emitted pairs, profile 25 and zero cumulative loss/uncertainty",
+  "fault_idle_config": 0,
+  "session": "unchanged by START/clean closure; genuine SET_PROFILE and NEW_SESSION behavior unchanged",
+  "nonce": "fresh nonzero per acquisition; immediately previous nonce rejected",
+  "pending_final": "next command 7 rejected until previous FINAL notification accepted",
+  "calibration": "existing patient/device/session/config binding and invalidation unchanged",
+  "hardware_repeated_start_verified": false
+}

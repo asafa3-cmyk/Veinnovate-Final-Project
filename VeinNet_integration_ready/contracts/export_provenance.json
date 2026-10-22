@@ -1,0 +1,38 @@
+{
+  "schema": "veinnet_runtime_export_provenance_v1",
+  "contract_version": "1.0.0",
+  "note": "This file records the environment and parity evidence from ORIGINAL model export/training-side verification. It describes provenance only -- it is NOT the deployment dependency lock for the Jetson/aarch64 target. See dependency_lock.json for the actual runtime lock.",
+  "export_environment": {
+    "source_file": "gate7_max30102_personaldelta/results/VITALDB_ENV_PROVENANCE.json",
+    "recorded_utc": "2026-08-27T13:50:00Z",
+    "platform": "x86_64 CUDA workstation (exact host not recorded upstream)",
+    "python_version": "not explicitly recorded in source provenance file -- NOT inferred from __pycache__ filenames per audit correction; treat as unknown",
+    "packages": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "torch": "2.7.1+cu128",
+      "onnx": "1.22.0",
+      "onnxruntime": "1.29.0"
+    }
+  },
+  "onnx_export_pytorch_vs_onnxruntime_parity": {
+    "source_file": "gate7_max30102_personaldelta/results/ONNX_EXPORT_PARITY_REPORT.json",
+    "onnx_sha256_at_export": "cb320a28b0abd48c2f6e34828c83b50ecce3c1f0c30f7fc8402b964cd74c8cd0",
+    "classification": "NON_SEALED_VALIDATION_INPUTS_ONLY",
+    "n_parity_rows": 8,
+    "opset": 17,
+    "onnxruntime_providers_used": ["CPUExecutionProvider"],
+    "max_abs_diff": 0.001068115234375,
+    "mean_abs_diff": 0.00027632713317871094,
+    "interpretation": "This is the authoritative evidence that the ONNX graph numerically matches its source PyTorch model, measured on 8 real (non-sealed, non-PHI-excluded-from-this-bundle) validation-split rows. Real input/output values are NOT reproduced in this bundle -- only these summary statistics and the source file path/hash. Golden fixtures shipped in golden/ are a SEPARATE, independent regression mechanism (ONNX Runtime vs itself, on synthetic data) and must not be conflated with this PyTorch-vs-ONNX parity evidence."
+  },
+  "bundle_build_environment": {
+    "note": "Environment used to author/validate this bundle's tests on the development machine (macOS, arm64). This is neither the export provenance above nor the Jetson deployment lock below -- recorded only for bundle-build traceability.",
+    "packages_used_to_generate_and_verify_golden_fixtures": {
+      "numpy": "2.5.2",
+      "scipy": "1.18.1",
+      "onnx": "1.22.0",
+      "onnxruntime": "1.29.0"
+    }
+  }
+}

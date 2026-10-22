@@ -1,0 +1,4 @@
+slot,pre,cuff_dsbp,model_dsbp,abs_err_sbp,carry_abs_err_sbp,cuff_ddbp,model_ddbp,abs_err_dbp,carry_abs_err_dbp,cuff_dhr,model_dhr
+BPUP1,M06,3.0,5.3,2.3,3.0,2.5,3.7,1.2,2.5,7.0,9.5
+BPREC1,M06,-2.0,21.2,23.2,2.0,1.0,11.8,10.8,1.0,1.0,5.4
+BPUP2,M12,9.0,-10.0,19.0,9.0,3.0,-7.8,10.8,3.0,2.0,19.6

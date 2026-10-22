@@ -1,0 +1,7 @@
+{
+  "_comment": "Relative locations of sibling components in the merged Veinnovate_Prototype layout. Copy to sibling_paths.json and adjust if your checkout differs — never hardcode an absolute path in code. The model artifact's exact path and SHA-256 are NOT duplicated here — receiver/sibling_resolver.py discovers them from the sibling's own bundle_manifest.json at startup and verifies them against the pinned contract in config/inference_manifest.json.",
+  "schema_version": "1.0.0",
+  "veinnet_integration_ready": "../VeinNet_integration_ready",
+  "veinnet_onnx_relative_path": "model/personaldelta_timeindependent_ensemble_42_43_44.onnx",
+  "veinogate_dashboard_integration_ready": "../VeinoGate_Dashboard_integration_ready"
+}

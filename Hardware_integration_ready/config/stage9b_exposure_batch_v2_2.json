@@ -1,0 +1,52 @@
+{
+  "schema_version": "2.2.0",
+  "experiment_id": "STAGE9B-VN001-EXPOSURE-001",
+  "batch_type": "EXPOSURE_CHARACTERIZATION_ONLY",
+  "engineering_only": true,
+  "hardware_uid": "A90AFDAF672D66F1",
+  "short_code": "VN-001",
+  "capture_duration_s": 30,
+  "initial_rest_s": 300,
+  "settle_before_each_attempt_s": 30,
+  "inter_capture_rest_s": 60,
+  "inter_zone_rest_s": 180,
+  "locked_settings": {
+    "sample_rate_sps": 400,
+    "sample_avg": 4,
+    "effective_sample_rate_hz": 100,
+    "pulse_width_us": 411,
+    "led_mode": 2
+  },
+  "quality_decision": {
+    "mode": "RECORD_ONLY_NO_NUMERIC_QUALITY_GATE",
+    "v1_metrics_may_accept_or_reject": false,
+    "v2_metrics_may_accept_or_reject": false
+  },
+  "stop_conditions": [
+    "pain, discomfort, blanching, unusual heat, or lasting skin indentation",
+    "sensor, housing, or lead movement or uncertain optical contact",
+    "identity, configuration, session, zone, or timing uncertainty",
+    "any clipped sample or FIFO overflow",
+    "packet loss, malformed data, duplicate samples, or out-of-order data"
+  ],
+  "attempts": [
+    {"attempt_ordinal": 1, "zone": "Z23", "config_id": 17, "repetition": 1, "led_pa_hex": "0x3E", "led_current_ma_approx": 12.4, "adc_range_na": 16384},
+    {"attempt_ordinal": 2, "zone": "Z23", "config_id": 16, "repetition": 1, "led_pa_hex": "0x1F", "led_current_ma_approx": 6.2, "adc_range_na": 16384},
+    {"attempt_ordinal": 3, "zone": "Z23", "config_id": 18, "repetition": 1, "led_pa_hex": "0x5E", "led_current_ma_approx": 18.8, "adc_range_na": 16384},
+    {"attempt_ordinal": 4, "zone": "Z34", "config_id": 18, "repetition": 1, "led_pa_hex": "0x5E", "led_current_ma_approx": 18.8, "adc_range_na": 16384},
+    {"attempt_ordinal": 5, "zone": "Z34", "config_id": 17, "repetition": 1, "led_pa_hex": "0x3E", "led_current_ma_approx": 12.4, "adc_range_na": 16384},
+    {"attempt_ordinal": 6, "zone": "Z34", "config_id": 16, "repetition": 1, "led_pa_hex": "0x1F", "led_current_ma_approx": 6.2, "adc_range_na": 16384},
+    {"attempt_ordinal": 7, "zone": "Z45", "config_id": 16, "repetition": 1, "led_pa_hex": "0x1F", "led_current_ma_approx": 6.2, "adc_range_na": 16384},
+    {"attempt_ordinal": 8, "zone": "Z45", "config_id": 18, "repetition": 1, "led_pa_hex": "0x5E", "led_current_ma_approx": 18.8, "adc_range_na": 16384},
+    {"attempt_ordinal": 9, "zone": "Z45", "config_id": 17, "repetition": 1, "led_pa_hex": "0x3E", "led_current_ma_approx": 12.4, "adc_range_na": 16384},
+    {"attempt_ordinal": 10, "zone": "Z45", "config_id": 17, "repetition": 2, "led_pa_hex": "0x3E", "led_current_ma_approx": 12.4, "adc_range_na": 16384},
+    {"attempt_ordinal": 11, "zone": "Z45", "config_id": 16, "repetition": 2, "led_pa_hex": "0x1F", "led_current_ma_approx": 6.2, "adc_range_na": 16384},
+    {"attempt_ordinal": 12, "zone": "Z45", "config_id": 18, "repetition": 2, "led_pa_hex": "0x5E", "led_current_ma_approx": 18.8, "adc_range_na": 16384},
+    {"attempt_ordinal": 13, "zone": "Z34", "config_id": 18, "repetition": 2, "led_pa_hex": "0x5E", "led_current_ma_approx": 18.8, "adc_range_na": 16384},
+    {"attempt_ordinal": 14, "zone": "Z34", "config_id": 17, "repetition": 2, "led_pa_hex": "0x3E", "led_current_ma_approx": 12.4, "adc_range_na": 16384},
+    {"attempt_ordinal": 15, "zone": "Z34", "config_id": 16, "repetition": 2, "led_pa_hex": "0x1F", "led_current_ma_approx": 6.2, "adc_range_na": 16384},
+    {"attempt_ordinal": 16, "zone": "Z23", "config_id": 16, "repetition": 2, "led_pa_hex": "0x1F", "led_current_ma_approx": 6.2, "adc_range_na": 16384},
+    {"attempt_ordinal": 17, "zone": "Z23", "config_id": 18, "repetition": 2, "led_pa_hex": "0x5E", "led_current_ma_approx": 18.8, "adc_range_na": 16384},
+    {"attempt_ordinal": 18, "zone": "Z23", "config_id": 17, "repetition": 2, "led_pa_hex": "0x3E", "led_current_ma_approx": 12.4, "adc_range_na": 16384}
+  ]
+}

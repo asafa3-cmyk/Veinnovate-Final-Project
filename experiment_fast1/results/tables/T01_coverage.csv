@@ -1,0 +1,11 @@
+measure,numerator,denominator,pct,meaning
+Captured windows,18,19,94.73684210526316,"Planned slots, including calibration"
+BP on captured slots,17,18,94.44444444444444,B0 has no live BP
+BP on planned slots,17,19,89.47368421052632,B0 calibration plus missing BPREC2
+BP on captured evaluation slots,17,17,100,Excludes B0
+BP on planned evaluation slots,17,18,94.44444444444444,"Excludes B0, includes missing BPREC2"
+Strict BP evaluation coverage,11,17,64.70588235294117,Offline quality gate; 6 withheld
+HR numerical output,18,19,94.73684210526316,Includes B0; planned slots
+HR HIGH tier,14,18,77.77777777777777,Captured slots
+SpO2 numerical output,18,19,94.73684210526316,Uncalibrated; no accuracy evidence
+Live latency records,17,18,94.44444444444444,BPUP2 missing from driver live log

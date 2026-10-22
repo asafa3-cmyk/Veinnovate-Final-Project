@@ -1,0 +1,53 @@
+{
+  "schema_version": "2.2.0",
+  "record_type": "stage9_metric_recording_contract",
+  "status": "STAGE9B_EXPOSURE_BATCH_AUTHORIZED_THRESHOLDS_PENDING",
+  "physical_capture_authorized": true,
+  "metric": {
+    "metric_version": "2.0.0",
+    "effective_sample_rate_hz": 100,
+    "window_samples": 3000,
+    "detrending": "least_squares_linear",
+    "spectral_window": "hann_symmetric",
+    "cardiac_band_hz": [0.7, 4.0],
+    "cardiac_band_edges": "inclusive_dft_bins",
+    "signal_power": "sum_squared_dft_magnitude_in_cardiac_band",
+    "noise_power": "sum_squared_dft_magnitude_in_all_other_positive_frequency_bins",
+    "red_ir_agreement": "minimum_normalized_real_cross_power_across_overlapping_cardiac_band_sub_blocks",
+    "zero_power_clamp_db": 120.0
+  },
+  "thresholds": {
+    "minimum_cardiac_snr_db": null,
+    "minimum_cardiac_red_ir_correlation": null,
+    "selection_status": "NOT_SELECTED",
+    "selection_constraint": "Must not be selected from the seven retained Stage 9 v1 accepted windows."
+  },
+  "recording": {
+    "diagnostic_schema_version": "2.0.0",
+    "retain_raw_red_ir_for_every_authorized_attempt": true,
+    "retain_zero_length_raw_file_when_no_samples_arrive": true,
+    "raw_filename": "raw-red-ir.jsonl",
+    "atomic_attempt_directory": true,
+    "checksum_every_file": true,
+    "historical_attempts_immutable": true
+  },
+  "authorization": {
+    "scope": "STAGE9B_EXPOSURE_CHARACTERIZATION_ONLY",
+    "experiment_id": "STAGE9B-VN001-EXPOSURE-001",
+    "plan_path": "config/stage9b_exposure_batch_v2_2.json",
+    "plan_sha256": "cb3624059972b1b524610c79cc6d615f6d2e26edde43122eb4339f02b19fb17e",
+    "attempt_limit": 18,
+    "allowed_zones": ["Z23", "Z34", "Z45"],
+    "allowed_config_ids": [16, 17, 18],
+    "required_adc_range_na": 16384,
+    "quality_decision": "RECORD_ONLY_NO_NUMERIC_V1_OR_V2_QUALITY_GATE",
+    "retain_every_attempt": true
+  },
+  "review_gate": {
+    "required_verdict": "ACCEPT_V2.2",
+    "requires_new_version_for_thresholds_or_scope_expansion": true,
+    "stage9b_authorized": true,
+    "stage9b_completion_authorized": false,
+    "stage10_authorized": true
+  }
+}

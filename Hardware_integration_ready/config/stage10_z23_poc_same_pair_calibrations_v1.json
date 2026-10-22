@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "stage10_z23_poc_same_pair_calibration_registry",
+  "policy_id": "STAGE10-Z23-POC-EXPOSURE-v1",
+  "scope": "Z23_ENGINEERING_POC_ONLY",
+  "hardware_uid": "A90AFDAF672D66F1",
+  "short_code": "VN-001",
+  "minimum_contact_dc_multiplier": 3.0,
+  "pairs": [
+    {
+      "config_id": 24,
+      "red_pa": "0x1F",
+      "ir_pa": "0x1F",
+      "red_no_contact_dc": 501.905,
+      "ir_no_contact_dc": 379.215,
+      "source": "../../stage9_external_evidence/STAGE9-Z23-POC-LED-COMPARISON-001-A/calibration-review.json",
+      "source_sha256": "497eaf14ab35ae31b55f428dc25c2037d3ef5a3772d15c134de9865ebc5a38b2"
+    },
+    {
+      "config_id": 25,
+      "red_pa": "0x1F",
+      "ir_pa": "0x3E",
+      "red_no_contact_dc": 212.44,
+      "ir_no_contact_dc": 389.935,
+      "source": "../../stage9_external_evidence/STAGE9-Z23-POC-LED-COMPARISON-001-B/calibration-review.json",
+      "source_sha256": "182785a1ea1add748febeb2f7f4fa095128fc3b0d96c427a88b2517a33cd9deb"
+    },
+    {
+      "config_id": 26,
+      "red_pa": "0x1F",
+      "ir_pa": "0x5E",
+      "red_no_contact_dc": 339.39,
+      "ir_no_contact_dc": 952.455,
+      "source": "../../stage9_external_evidence/STAGE9-Z23-POC-LED-COMPARISON-001-C/calibration-review.json",
+      "source_sha256": "72c7c5928fa56ea417d1807fc728b842ff043862bfd088c55b082153e61b2bef"
+    },
+    {
+      "config_id": 17,
+      "red_pa": "0x3E",
+      "ir_pa": "0x3E",
+      "red_no_contact_dc": 580.96,
+      "ir_no_contact_dc": 517.81,
+      "source": "../../stage9_external_evidence/STAGE9B-VN001-C17-Z23-CONTINUITY-014/calibration-review.json",
+      "source_sha256": "92ed1147a8bc28cad2ab9355e6e8b2ff3e37541f650615af000bebac313d1eed"
+    },
+    {
+      "config_id": 18,
+      "red_pa": "0x5E",
+      "ir_pa": "0x5E",
+      "red_no_contact_dc": 600.605,
+      "ir_no_contact_dc": 550.135,
+      "source": "../../stage9_external_evidence/STAGE9B-VN001-C18-Z23-CONTINUITY-011/calibration-review.json",
+      "source_sha256": "163547bd0330ea58eea31cb3ae84b24f745314471af21ea62483f5e65112639d"
+    }
+  ]
+}

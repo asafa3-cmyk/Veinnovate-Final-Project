@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veinnet-runtime"
+version = "1.0.0"
+description = "Deployment-only VeinNet blood-pressure inference runtime: frozen ONNX ensemble + frozen MAX30102/morphology/demographics preprocessing."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy==2.4.6",
+    "scipy==1.17.1",
+    "onnxruntime==1.29.0",
+]
+
+[tool.setuptools]
+packages = ["veinnet_runtime", "veinnet_runtime.preprocessing"]
+
+# -----------------------------------------------------------------------------
+# INSTALLATION CONTRACT -- READ BEFORE PACKAGING
+#
+# This prototype ONLY supports editable installation:
+#
+#     python -m pip install -e ../VeinNet_integration_ready
+#
+# veinnet_runtime resolves contracts/model.onnx/golden fixtures at runtime via
+# `Path(__file__).resolve().parents[1] / "contracts" / ...` (see
+# veinnet_runtime/onnx_loader.py and veinnet_runtime/preprocessing/max30102.py).
+# Under an editable install, __file__ still points into this bundle's real
+# on-disk location, so parents[1] correctly resolves to this folder's
+# contracts/, model/, and golden/ directories regardless of the caller's
+# working directory.
+#
+# A NORMAL (non-editable) WHEEL BUILD IS NOT CURRENTLY SUPPORTED. `setuptools`
+# only packages the `veinnet_runtime` Python package (see `packages` above);
+# it does NOT bundle contracts/, model/, or golden/ as package data. Installing
+# a wheel built from this pyproject.toml would put veinnet_runtime's .py files
+# into site-packages with no sibling contracts/model/golden directories, so
+# `Path(__file__).resolve().parents[1] / "contracts"` would point at
+# site-packages' parent (NOT this bundle) and every load would fail loudly
+# (hash/contract file not found) -- fail-closed, not silently wrong, but not
+# usable. Do not build or ship a wheel from this bundle until model/,
+# contracts/, and golden/ are declared as package-data (or moved under
+# veinnet_runtime/) and the path-resolution logic is updated accordingly and
+# re-tested. That work is out of scope for this packaging pass.
+# -----------------------------------------------------------------------------

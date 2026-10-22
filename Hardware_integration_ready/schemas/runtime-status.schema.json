@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Local runtime operational status v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "served_at_utc",
+    "sessions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.1.0"
+    },
+    "served_at_utc": {
+      "type": "number"
+    },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "session_id",
+          "connection_status",
+          "acquisition_state",
+          "received_sample_pairs",
+          "latest_reading_id",
+          "last_communication_at_utc",
+          "next_measurement_at_utc",
+          "scheduled_interval_s",
+          "schedule_enabled",
+          "battery"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "connection_status": {
+            "enum": [
+              "DISCONNECTED",
+              "CONNECTING",
+              "CONNECTED"
+            ]
+          },
+          "acquisition_state": {
+            "type": "string"
+          },
+          "received_sample_pairs": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "latest_reading_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_communication_at_utc": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "next_measurement_at_utc": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "scheduled_interval_s": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "exclusiveMinimum": 0
+          },
+          "schedule_enabled": {
+            "type": "boolean"
+          },
+          "battery": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value_mv",
+              "pct",
+              "status",
+              "measured_at_utc",
+              "charge_indication",
+              "display_policy_version"
+            ],
+            "properties": {
+              "value_mv": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 2500,
+                "maximum": 4500
+              },
+              "pct": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 100
+              },
+              "status": {
+                "enum": [
+                  "AVAILABLE",
+                  "HARDWARE_VALIDATION_REQUIRED",
+                  "UNAVAILABLE",
+                  "STALE"
+                ]
+              },
+              "measured_at_utc": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "charge_indication": {
+                "enum": [
+                  "CHARGING",
+                  "NOT_CHARGING_OR_FULL",
+                  "UNKNOWN"
+                ]
+              },
+              "display_policy_version": {
+                "const": "POC_BATTERY_DISPLAY_3600_3900_V1"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "status": {
+                      "const": "AVAILABLE"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "value_mv": {
+                      "type": "integer"
+                    },
+                    "pct": {
+                      "type": "integer"
+                    },
+                    "measured_at_utc": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "value_mv": {
+                      "type": "null"
+                    },
+                    "pct": {
+                      "type": "null"
+                    },
+                    "measured_at_utc": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

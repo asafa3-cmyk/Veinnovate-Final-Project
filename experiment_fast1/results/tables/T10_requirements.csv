@@ -1,0 +1,24 @@
+id,attachment_section,requirement,target,observed,status,exhibit,limit
+G1,2.2.1 p1,Accurate absolute BP; continuous; without cuff,Absolute BP from PPG,17 numerical BP estimates; 18 periodic 30-s windows; initial cuff calibration,PARTIAL,"F01,F02,T01,T02",Not calibration-free or beat-to-beat; full-cohort MAE fails
+G2,2.2.1 p1,Oxygen saturation measurement,Reference accuracy required,"18 uncalibrated numeric estimates, no oximeter",NOT_EVALUABLE,"F11,T09",Numeric availability is not accuracy
+G3,2.2.1 p1,Real-time endpoint monitoring,Reliable transmission and display,17 edge emission latency records,PARTIAL,"F10,T07",No dashboard-render measurement
+G4,2.2.1 p1,Integration with intravenous cannula,Long-term integration vision,No mass/mechanical test in FAST1,NOT_TESTED,T10,Do not infer mechanical validation from dorsal placement
+O1,2.2.2 p1,ML/DL absolute BP from raw pulse,Frozen model inference,Actual sensor-to-model predictions reproduced,IMPLEMENTED_ACCURACY_NOT_MET,"F02,T02",No new training; trained model uses baseline cuff
+O2,2.2.2 p1,High-quality HR and oxygen saturation,Independent accuracy evidence,HR MAE 3.38 BPM; oxygen reference absent,PARTIAL,"F07,F08,F11,T05",HR scalar is not a separate model input; shared waveform quality matters
+O3,2.2.2 p1,Big Data and diverse-population generalization,Training/held-out dataset evidence,One adult session only,NOT_TESTED,T10,Historical dataset claims not revalidated by FAST1
+O4,2.2.2 p1,Clinical interface and dynamic environment,Workflow and variable-condition testing,Rest/motion/challenge slots; no nurse-display trial,PARTIAL,"F01,F09,T06",Not clinical workflow validation
+O5,2.2.2 p1-2,Reliable real-time transport and noise reduction,"Retained raw, processing and dedicated display","274 hashed chunks, 18 complete windows; gate comparison",PARTIAL,"F06,F10,F12a,F12b,T08",Within-window integrity does not prove entire-session continuity
+O6,2.2.2 p2,Full component synchronization,Temporal alignment,Slot association recorded; late BPUP2; no cuff start/end,PARTIAL,"T04,T07",Slot ID is not proof of temporal overlap
+O7,2.2.2 p2,Prior prediction accuracy exceeding 75%,Definition and prior validation provenance,Accuracy denominator/tolerance unspecified,UNDEFINED,T10,"Do not use 100-MAPE, AUC, or fraction of valid results as substitute"
+I01,2.2.3 p2,SBP MAE,MAE 8-10 mmHg,13.36 all; 12.48 excluding late BPUP2; 9.29 strict 11/17,NOT_MET_ALL,"F02,F03,F06,T02",Upper limits 10/7; lower 8/5 are stronger targets; lower errors are better
+I02,2.2.3 p2,DBP MAE,MAE 5-7 mmHg,7.87 all; 7.34 excluding late BPUP2; 6.27 strict 11/17,NOT_MET_ALL,"F02,F03,F06,T02",Upper limits 10/7; lower 8/5 are stronger targets; lower errors are better
+I03,2.2.3 p2,"HR accuracy, typical and dynamic",MAE 6-10 BPM; >=85% agreement,MAE3.38; within5 83.3%; within10 94.4%,PARTIAL,"F07,F08,T05",Agreement tolerance absent; cuff pulse is not independently verified ECG. No unconditional agreement PASS
+I04,2.2.3 p2,SpO2 accuracy,Most within3 points; >=90% within4 points,No reference readings,NOT_EVALUABLE,"F11,T09",Reference cuff recorded BP/pulse only
+I05,2.2.3 p2,BP distribution (BHS-style),>=40/65/85% within5/10/15 mmHg,SBP17.6/47.1/52.9%; DBP41.2/64.7/88.2%,NOT_MET_ALL,"F05,T03","Descriptive distribution, not a formal BHS grade; 64.7% must not round to a pass at65%"
+I06,2.2.3 p2,Processing and display time,30-120 seconds,30-s nominal acquisition; live post-acquisition p95 0.274s,PARTIAL,"F10,T07",No command-to-render measurement; subsecond latency alone cannot pass this requirement
+I07,2.2.3 p2,Transmission range,4m; up to8m optimal,Distance not measured,NOT_TESTED,T10,No invented range plot
+I08,2.2.3 p2,Dedicated display,Smooth presentation,No dashboard trial,NOT_TESTED,T10,No fabricated usability or render latency
+I09,2.2.3 p2,Full system synchronization,Continuous efficient operation,18/19 windows; timestamps; cuff overlap uncertain,PARTIAL,"F01,T01,T07",Empty event log does not establish zero disconnects
+I10,2.2.3 p2,Mounted mass excluding batteries,<= mass of3 equivalent cannulas,No weighing evidence,NOT_MEASURED,T10,No fabricated mass comparison
+I11,2.2.3 p2,Prior BP accuracy >75%,Undefined regression accuracy,Not derivable from MAE without definition,UNDEFINED,T10,Duplicates historical assertion O7
+I12,2.2.3 p2,Broader age range including children,Population applicability,One adult only,NOT_TESTED,T10,No pediatric inference

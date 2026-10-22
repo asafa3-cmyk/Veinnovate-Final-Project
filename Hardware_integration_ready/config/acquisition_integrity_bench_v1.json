@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "executor": "scripts/acquisition_integrity_bench.py",
+  "receiver": "receiver/bench_capture_integrity.py",
+  "ble_protocol_version": 3,
+  "final_witness_version": 1,
+  "final_characteristic_uuid": "6e4e0205-b5a3-f393-e0a9-e50e24dcca9e",
+  "final_packet_type": 4,
+  "final_packet_bytes": 48,
+  "start_command": 6,
+  "profile": 25,
+  "sample_pairs": 3000,
+  "final_timeout_s": 2.0,
+  "capture_timeout_s": 45.0,
+  "first_data_timeout_s": 2.0,
+  "no_reconnect": true,
+  "no_capture_retry": true,
+  "measurement_use_permitted": false,
+  "physical_sampling_verified": false
+}

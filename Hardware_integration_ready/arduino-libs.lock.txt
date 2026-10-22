@@ -1,0 +1,20 @@
+# arduino-libs.lock.txt — locked Arduino toolchain versions for
+# firmware/veinnet_sensor_v1. Install with:
+#   arduino-cli core install Seeeduino:nrf52@1.1.9 --additional-urls https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json
+#   arduino-cli lib install "SparkFun MAX3010x Pulse and Proximity Sensor Library"@1.1.2
+#
+# CORRECTION (this hardening pass): ArduinoBLE does NOT compile against this
+# board package — see veinnet_sensor_v1.ino header comment for why. BLE is
+# provided by Bluefruit52Lib ("Adafruit Bluefruit nRF52 Libraries"), which
+# ships bundled inside the Seeeduino:nrf52 core install above (no separate
+# `arduino-cli lib install` needed/possible for it — it is not in the
+# Library Manager index, only inside the board package). Its version is
+# pinned to whatever Seeeduino:nrf52@1.1.9 bundles, confirmed by reading
+# that install's library.properties during this bundle's compile
+# verification:
+#   Adafruit Bluefruit nRF52 Libraries (Bluefruit52Lib) == 0.21.0
+#   (bundled dependency: Adafruit TinyUSB Library == 1.7.0, Adafruit nRFCrypto)
+
+Seeeduino:nrf52==1.1.9
+SparkFun MAX3010x Pulse and Proximity Sensor Library==1.1.2
+Bluefruit52Lib (bundled with Seeeduino:nrf52@1.1.9)==0.21.0

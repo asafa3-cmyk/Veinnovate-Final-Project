@@ -1,0 +1,40 @@
+{
+  "schema": "veinnet_runtime_preprocessing_contract_v1",
+  "contract_version": "1.0.1",
+  "source": {
+    "file": "gate7_max30102_personaldelta/max30102.py",
+    "sha256": "bcd384980b4de75d3bf9462fbf7c6c8494296f526c3f69f0bd9cd925b04b8db0",
+    "functions_extracted": ["assemble_packets", "preprocess"],
+    "supporting_types_extracted": ["BLEPacket"],
+    "excluded_from_extraction": [
+      "CalibrationCache (only used by MAX30102Runtime)",
+      "MAX30102Runtime (PyTorch-checkpoint-based inference class; not part of the ONNX runtime path; loads .pt via torch.load)"
+    ],
+    "extraction_note": "assemble_packets() and preprocess() bodies are copied unmodified except: (1) the parameter/local name 'cfg' was renamed 'spec' and its source changed from common.load_config()['max30102'] to this contract's 'max30102' block; (2) the internal call to compute_morphology_reading is imported from veinnet_runtime.preprocessing.morphology instead of gate5_v6pro.morphology -- same function, copied verbatim, see morphology_contract.json. Version 1.0.1 raises only the packet-loss and clipping limits for the engineering POC; the research-source values and hash remain historical provenance.",
+    "known_quirk_not_fixed": "preprocess() computes a local variable 'clipped = 0.0' that is never updated before being returned as sqi.clipped_fraction -- this field is therefore always 0.0 in preprocess() output, even though a separate, real clipped_fraction check already happened earlier in assemble_packets(). This is preserved exactly as found in the frozen source; it is NOT fixed here. Reported for review, not silently patched."
+  },
+  "max30102": {
+    "target_hz": 100,
+    "window_seconds": 30,
+    "bandpass_hz": [0.5, 8.0],
+    "max_packet_loss_fraction": 0.02,
+    "max_clipped_fraction": 0.01,
+    "min_contact_dc": 1000.0,
+    "min_red_ir_correlation": 0.2,
+    "min_red_pulsatility": 0.0001
+  },
+  "excluded_research_values": {
+    "recalibration_seconds": {
+      "research_source_value_not_active": 86400,
+      "source": "gate7_max30102_personaldelta/config.json max30102.recalibration_seconds",
+      "reason_excluded": "Not referenced by assemble_packets() or preprocess() -- only by MAX30102Runtime.infer(), which is excluded from this bundle. Calibration-expiry POLICY is an operational decision, not a signal-preprocessing parameter, and is owned by Hardware_integration_ready: warning at 14400 seconds (4h), hard expiry at 21600 seconds (6h). The model runtime here receives already-authorized calibration inputs and performs only the frozen mathematical inference; it does not accept or reject inference based on elapsed time."
+    }
+  },
+  "signal_shapes": {
+    "raw_window_samples_at_input_rate": "sample_rate_hz * window_seconds",
+    "output_ppg_shape": [3, 1000],
+    "output_ppg_dtype": "float32",
+    "output_morphology_shape": [13],
+    "output_morphology_dtype": "float32"
+  }
+}

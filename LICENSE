@@ -1,0 +1,10 @@
+Copyright (c) 2026 Asaf Asnin. All rights reserved.
+
+This repository is made available solely for academic review and evaluation
+of the Veinnovate final project at Afeka College of Engineering.
+
+No license is granted to use, copy, modify, distribute, or commercialize this
+code or any part of it without prior written permission from the author.
+
+Third-party components keep their own licenses (e.g. the SparkFun MAX30105
+driver under Hardware_integration_ready/firmware/veinnet_sensor_v1/, BSD).

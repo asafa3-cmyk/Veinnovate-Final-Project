@@ -1,0 +1,198 @@
+{
+ "run_id": "POC-20261021-FAST1",
+ "window_s": 30,
+ "rest_before_b0_s": 60,
+ "cuff_lead_s": 15,
+ "cuff_formats": [
+  "SBP/DBP/HR",
+  "SBP/DBP/HR + SBP/DBP/HR (AVG2)"
+ ],
+ "cuff_entry_help": "echo 'M03 121/78/70' >> cuff_in.txt   |   echo 'B0 125/80/72 + 123/79/71' >> cuff_in.txt   |   echo 'GO BPUP1' >> cuff_in.txt",
+ "baseline_slots": [
+  "B0",
+  "B0R"
+ ],
+ "p95_latency_limit_s": 2.0,
+ "slots": [
+  {
+   "slot": "B0",
+   "kind": "CAL",
+   "at": {
+    "rest_s": 60
+   },
+   "cuff": "AVG2",
+   "note": "calibration; must pass motion gate, else B0R (the only allowed repeat)"
+  },
+  {
+   "slot": "M01",
+   "kind": "REST",
+   "at": {
+    "after": "B0",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M02",
+   "kind": "REST",
+   "at": {
+    "after": "M01",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M03",
+   "kind": "REST",
+   "at": {
+    "after": "M02",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M04",
+   "kind": "REST",
+   "at": {
+    "after": "M03",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M05",
+   "kind": "REST",
+   "at": {
+    "after": "M04",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M06",
+   "kind": "REST",
+   "at": {
+    "after": "M05",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "MOT1",
+   "kind": "MOTION",
+   "at": {
+    "after": "M06",
+    "delay_s": 180
+   },
+   "cuff": "1",
+   "note": "deliberate hand motion during the window (expect HR ARTIFACT + BP motion warning)"
+  },
+  {
+   "slot": "BPUP1",
+   "kind": "BPUP",
+   "at": {
+    "manual": true
+   },
+   "cuff": "AVG2",
+   "pre": "M06",
+   "note": "owner BP-raising method; type 'GO BPUP1' once the sensor hand is still; note method + start/stop time"
+  },
+  {
+   "slot": "BPREC1",
+   "kind": "BPREC",
+   "at": {
+    "after": "BPUP1",
+    "delay_s": 180
+   },
+   "cuff": "1",
+   "pre": "M06"
+  },
+  {
+   "slot": "M07",
+   "kind": "REST",
+   "at": {
+    "after": "BPREC1",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M08",
+   "kind": "REST",
+   "at": {
+    "after": "M07",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M09",
+   "kind": "REST",
+   "at": {
+    "after": "M08",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M10",
+   "kind": "REST",
+   "at": {
+    "after": "M09",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M11",
+   "kind": "REST",
+   "at": {
+    "after": "M10",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "M12",
+   "kind": "REST",
+   "at": {
+    "after": "M11",
+    "delay_s": 180
+   },
+   "cuff": "1"
+  },
+  {
+   "slot": "MOT2",
+   "kind": "MOTION",
+   "at": {
+    "after": "M12",
+    "delay_s": 180
+   },
+   "cuff": "1",
+   "note": "deliberate hand motion"
+  },
+  {
+   "slot": "BPUP2",
+   "kind": "BPUP",
+   "at": {
+    "manual": true
+   },
+   "cuff": "AVG2",
+   "pre": "M12",
+   "note": "owner BP-raising method; type 'GO BPUP2' once the sensor hand is still"
+  },
+  {
+   "slot": "BPREC2",
+   "kind": "BPREC",
+   "at": {
+    "after": "BPUP2",
+    "delay_s": 180
+   },
+   "cuff": "1",
+   "pre": "M12"
+  }
+ ],
+ "backend_mode": "EXPERIMENT_FAST1",
+ "note": "slot times are measured from the previous slot's capture request; each slot = 5 s preflight + 30 s window",
+ "require_no_calibration_at_start": true
+}

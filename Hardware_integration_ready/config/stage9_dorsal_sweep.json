@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "STAGE9-VN001-DORSAL-OAAT-001",
+  "engineering_only": true,
+  "hardware_uid": "A90AFDAF672D66F1",
+  "short_code": "VN-001",
+  "repetitions_per_configuration": 3,
+  "capture_duration_s": 30,
+  "rest_before_first_capture_s": 300,
+  "settle_before_each_capture_s": 30,
+  "inter_capture_rest_s": 60,
+  "locked_settings": {
+    "sample_rate_sps": 400,
+    "sample_avg": 4,
+    "effective_sample_rate_hz": 100,
+    "pulse_width_us": 411,
+    "led_mode": 2
+  },
+  "placement": {
+    "hand": "same clean, dry dorsal hand for the complete batch",
+    "site": "optical-window center at the midpoint of the intermetacarpal space between the second and third metacarpals, halfway from the knuckle line to the dorsal wrist crease",
+    "orientation": "optical window flat against skin; sensor long axis parallel to the third metacarpal; cable exits toward the wrist",
+    "representative_housing": "VN-001 labeled housing used as the repeatable placement interface; no final assembly or Li-Po",
+    "contact_pressure": "light and steady: full-window contact with no visible gap, blanching, discomfort, or lasting indentation; qualitative and uncalibrated",
+    "posture": "seated, forearm fully supported, palm down, fingers naturally extended and relaxed; hand, sensor, housing, and leads remain still",
+    "movement_rule": "do not move or retune placement within a batch; reject any capture with movement or uncertain contact"
+  },
+  "start_signal": "operator says READY after the settle interval; recorder prints CAPTURE_START with experiment/config/repetition and UTC before enabling START",
+  "stop_conditions": [
+    "unusual heat or increasing warmth",
+    "pain, discomfort, blanching, or lasting indentation",
+    "sensor or housing movement, lead strain, or uncertain contact",
+    "identity, configuration, session, or timing uncertainty",
+    "any clipped sample, FIFO overflow, packet loss, duplicate, or out-of-order packet"
+  ],
+  "configurations": [
+    {"order": 1, "config_id": 16, "factor": "led_current", "led_pa_hex": "0x1F", "led_current_ma_approx": 6.2, "adc_range_na": 16384},
+    {"order": 2, "config_id": 17, "factor": "led_current", "led_pa_hex": "0x3E", "led_current_ma_approx": 12.4, "adc_range_na": 16384},
+    {"order": 3, "config_id": 18, "factor": "led_current", "led_pa_hex": "0x5E", "led_current_ma_approx": 18.8, "adc_range_na": 16384},
+    {"order": 4, "config_id": 19, "factor": "baseline", "led_pa_hex": "0x7F", "led_current_ma_approx": 25.4, "adc_range_na": 16384},
+    {"order": 5, "config_id": 20, "factor": "led_current", "led_pa_hex": "0x9F", "led_current_ma_approx": 31.8, "adc_range_na": 16384},
+    {"order": 6, "config_id": 21, "factor": "led_current", "led_pa_hex": "0xBE", "led_current_ma_approx": 38.0, "adc_range_na": 16384},
+    {"order": 7, "config_id": 22, "factor": "adc_range", "led_pa_hex": "0x7F", "led_current_ma_approx": 25.4, "adc_range_na": 4096},
+    {"order": 8, "config_id": 23, "factor": "adc_range", "led_pa_hex": "0x7F", "led_current_ma_approx": 25.4, "adc_range_na": 8192}
+  ]
+}

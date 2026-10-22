@@ -1,0 +1,63 @@
+# requirements.lock.txt — locked Python dependencies for Hardware_integration_ready.
+#
+# Test/dev subset (no hardware, no BLE, no ONNX runtime, no live network
+# socket required — the full test suite, including HTTP-service and
+# WebSocket-wiring tests, runs entirely over FastAPI's TestClient):
+pytest==8.3.4
+pytest-asyncio==0.24.0
+jsonschema==4.23.0
+httpx==0.28.1          # FastAPI TestClient transport
+
+# Jetson HTTP/WebSocket network-boundary service (receiver/http_service.py).
+# fastapi is pure Python; uvicorn's mandatory dependencies (starlette,
+# click, h11, anyio) are also pure Python, and uvicorn runs correctly on
+# the plain asyncio event loop without its optional uvloop/httptools
+# extras. Neither package depends on CUDA/TensorRT. NOT independently
+# verified by an actual `pip install` on aarch64/Jetson hardware in this
+# bundle-creation pass — this is a documented expectation based on the
+# packages' own dependency declarations, not a hardware-tested result. Treat
+# as unverified until installed on a real Jetson Orin Nano (see README
+# "Known limitations").
+fastapi==0.115.6
+uvicorn==0.34.0
+wsproto==1.2.0         # Uvicorn's live WebSocket protocol; TestClient does not install it
+
+# Production Jetson runtime subset (only needed for real BLE — imported
+# lazily by ble_central.py/bleak_adapter.py, so the test suite above runs
+# without it).
+# bleak==0.22.3 was the original pin; the three-component E2E hardening pass
+# found it has no published wheel/sdist support for Python 3.14 (`pip
+# install` fails outright — verified directly, not assumed) on this
+# development machine. Bumped to 3.0.2, confirmed installable on Python
+# 3.14.0 alongside the sibling's numpy==2.4.6/scipy==1.17.1/onnxruntime==1.29.0
+# with no version conflicts. JetPack's provided Python (commonly 3.10) is
+# within bleak 3.0.2's supported range too; re-verify on the real Jetson
+# regardless (see README "Known limitations" — Jetson/aarch64 verification
+# is pending).
+bleak==3.0.2
+
+# -----------------------------------------------------------------------------
+# MODEL RUNTIME OWNERSHIP -- READ BEFORE ADDING numpy/onnx/onnxruntime HERE
+#
+# This bundle does NOT pin numpy, onnx, or onnxruntime. An earlier draft did
+# (numpy==2.3.5, onnxruntime==1.20.1, onnx==1.17.0) via its own independent
+# ONNX loader (model_runtime.OnnxModelRuntime) — that loader has been removed
+# (see model_runtime.py's docstring) because it duplicated exactly what the
+# sibling VeinNet_integration_ready component's veinnet_runtime already does,
+# under DIFFERENT pins (numpy==2.4.6, scipy==1.17.1, onnxruntime==1.29.0 —
+# see VeinNet_integration_ready/requirements.lock.txt) — two independently
+# pinned runtimes loading the same ONNX file is a real correctness risk, not
+# just redundant.
+#
+# Final production model loading, hash verification, I/O validation,
+# preprocessing, and inference are owned entirely by
+# receiver/veinnet_sibling_adapter.py, which is only usable once the sibling
+# is installed:
+#
+#     python -m pip install -e ../VeinNet_integration_ready
+#
+# That install pulls in numpy/scipy/onnxruntime at ITS locked versions.
+# Installing this file's pins together with that editable install is exactly
+# "install the model bundle's locked candidate dependencies once" — do not
+# add a second, competing numpy/onnx/onnxruntime pin here.
+# -----------------------------------------------------------------------------

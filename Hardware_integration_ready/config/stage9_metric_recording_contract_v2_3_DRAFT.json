@@ -1,0 +1,97 @@
+{
+  "schema_version": "2.3.0",
+  "record_type": "stage9_metric_recording_contract",
+  "status": "DRAFT_PENDING_OWNER_AND_CLAUDE_REVIEW",
+  "supersedes_schema_version": "2.2.0",
+  "change_summary": {
+    "scope_change": "Zone coverage narrowed from [Z23, Z34, Z45] to [Z23] only, per explicit project-owner decision.",
+    "metric_change": "metric_version updated from 2.0.0 to 2.1.0 (additive drift-bounded fix). 2.0.0 remains computable unchanged for historical comparability; 2.1.0 is now the acceptance-relevant metric.",
+    "threshold_change": "Thresholds selected for the first time in this version, from four retained Z23 attempts (C16-continuity-007, C16-continuity-008, C17, C18) using metric_version 2.1.0.",
+    "authorization_change": "None. review_gate authorization fields are unchanged (still false) pending the independent Claude Stage 9B verdict (STAGE9_PASS/STAGE9_FAIL) and explicit owner approval of this draft."
+  },
+  "physical_capture_authorized": true,
+  "metric": {
+    "metric_version": "2.1.0",
+    "effective_sample_rate_hz": 100,
+    "window_samples": 3000,
+    "detrending": "least_squares_linear",
+    "spectral_window": "hann_symmetric",
+    "cardiac_band_hz": [0.7, 4.0],
+    "cardiac_band_edges": "inclusive_dft_bins",
+    "signal_power": "sum_squared_dft_magnitude_in_cardiac_band",
+    "noise_power_v2_0_0": "sum_squared_dft_magnitude_in_all_other_positive_frequency_bins",
+    "noise_power_v2_1_0_drift_bounded": "sum_squared_dft_magnitude_in_all_other_positive_frequency_bins_excluding_sub_0_5hz_drift_band",
+    "dominant_frequency_stability": "peak_detection_in_cardiac_band_plus_cross_sub_block_frequency_consistency_score",
+    "red_ir_agreement": "minimum_normalized_real_cross_power_across_overlapping_cardiac_band_sub_blocks",
+    "zero_power_clamp_db": 120.0,
+    "remediation_evidence": {
+      "defect_found_in": "metric_version 2.0.0",
+      "defect_description": "Sub-0.7 Hz baseline-drift power (55-94% of out-of-band denominator across all 8 real channel-windows) dominated the noise-power term, masking a genuine, cross-window-consistent cardiac peak (1.40-1.57 Hz, physiologically 84-94 bpm) behind a negative SNR reading.",
+      "regression_tests_passed": "4/4 (byte-identical v2.0.0 backward match, 1.4-1.6 Hz peak detection on real windows, synthetic drift-isolation boundary within 0.12 dB across driven drift, synthetic negative control with consistency_score 0.0)",
+      "full_suite_regression": "573 passed, 1 skipped, 0 failed",
+      "harmonic_vs_cardiac_check": "Cardiac-band bin does not continue the drift harmonic comb decay; it is a local upward step (5x-9x) above its nearest lower-harmonic neighbor in 6 of 8 traces, evidence against the cardiac peak being leaked drift harmonic energy.",
+      "evidence_files": [
+        "stage9_external_evidence/stage9-metric-v2.1.0-regression-results.json",
+        "stage9_external_evidence/stage9-c17-c18-cardiac-metrics.json",
+        "Hardware_integration_ready/tests/test_stage9a_metric_v2_1_0_remediation.py"
+      ]
+    }
+  },
+  "thresholds": {
+    "minimum_red_cardiac_snr_db": 5.0,
+    "minimum_ir_cardiac_snr_db": 2.5,
+    "minimum_dominant_frequency_consistency": 0.85,
+    "selection_status": "PROVISIONAL_PENDING_INDEPENDENT_CLAUDE_REVIEW",
+    "selection_basis": "Margin below the weakest observed real Z23 value per channel: RED weakest observed 6.89 dB (margin 1.89 dB), IR weakest observed 3.67 dB (margin 1.17 dB), consistency weakest observed 0.909 (margin 0.059).",
+    "selection_sample": {
+      "n_attempts_authorized": 5,
+      "n_attempts_retained_with_data": 4,
+      "n_channel_windows": 8,
+      "zones_covered": ["Z23"],
+      "configs_covered": [16, 17, 18],
+      "non_retained_attempts": [
+        {
+          "experiment_id": "STAGE9B-VN001-C16-Z23-CONTINUITY-006",
+          "disposition": "PERSISTENCE_FAILED",
+          "data_retained": false,
+          "cause": "Storage/tooling failure (external plan, firmware evidence, CAL-NC reservation, raw notification journal, result, and manifest were stored under /private/tmp and purged by the OS between turns) -- not a physiological or hardware rejection. Reconstruction forbidden.",
+          "evidence_path": "stage9_external_evidence/continuity-006-persistence-failure.json"
+        }
+      ],
+      "caveat": "Small sample (n=4 retained of 5 authorized, single zone). Thresholds reflect current evidence only and carry no statistical margin beyond the stated per-channel gap; a future attempt below these values could still represent normal measurement variance rather than true failure. Independent review must assess whether this sample size is sufficient on its own terms."
+    },
+    "selection_constraint": "Must not be selected from the seven retained Stage 9 v1 accepted windows.",
+    "constraint_satisfied": true,
+    "constraint_note": "Selected from STAGE9B-VN001-EXPOSURE-001 batch attempts (v2 exposure characterization), not from the v1 accepted windows."
+  },
+  "recording": {
+    "diagnostic_schema_version": "2.0.0",
+    "retain_raw_red_ir_for_every_authorized_attempt": true,
+    "retain_zero_length_raw_file_when_no_samples_arrive": true,
+    "raw_filename": "raw-red-ir.jsonl",
+    "atomic_attempt_directory": true,
+    "checksum_every_file": true,
+    "historical_attempts_immutable": true
+  },
+  "authorization": {
+    "scope": "STAGE9B_EXPOSURE_CHARACTERIZATION_ONLY",
+    "experiment_id": "STAGE9B-VN001-EXPOSURE-001",
+    "plan_path": "config/stage9b_exposure_batch_v2_2.json",
+    "plan_sha256": "cb3624059972b1b524610c79cc6d615f6d2e26edde43122eb4339f02b19fb17e",
+    "attempt_limit": 18,
+    "allowed_zones": ["Z23"],
+    "allowed_zones_previous": ["Z23", "Z34", "Z45"],
+    "allowed_config_ids": [16, 17, 18],
+    "required_adc_range_na": 16384,
+    "quality_decision": "RECORD_ONLY_NO_NUMERIC_V1_OR_V2_QUALITY_GATE",
+    "retain_every_attempt": true
+  },
+  "review_gate": {
+    "required_verdict": "STAGE9_PASS",
+    "requires_new_version_for_thresholds_or_scope_expansion": true,
+    "stage9b_authorized": true,
+    "stage9b_completion_authorized": false,
+    "stage10_authorized": false,
+    "pending_action": "Run the dedicated STAGE9_RECOVERY_PLAN.md Stage 9B Claude independent-review prompt against this draft. Only a returned STAGE9_PASS verdict plus explicit owner approval may flip stage9b_completion_authorized and stage10_authorized to true, and that edit must be made by the owner or by whoever owns the contract file directly — not authorized by this draft alone."
+  }
+}

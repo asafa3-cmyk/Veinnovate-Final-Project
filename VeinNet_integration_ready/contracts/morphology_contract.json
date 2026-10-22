@@ -1,0 +1,21 @@
+{
+  "schema": "veinnet_runtime_morphology_contract_v1",
+  "contract_version": "1.0.0",
+  "source": {
+    "file": "gate5_v6pro/morphology.py",
+    "sha256": "0f88ef58da58d7ceb563853f59425b947b43eb0dd229630efe6664c8bb8add13",
+    "note": "Byte-identical to gate7_max30102_personaldelta/retrieved_upstream/gate5_v6pro/morphology.py (diffed clean). Copied VERBATIM into this bundle (veinnet_runtime/preprocessing/morphology.py) -- no lines altered.",
+    "functions_extracted": ["compute_morphology", "compute_morphology_reading", "_find_peaks"]
+  },
+  "constants": {
+    "N_MORPHOLOGY": 13,
+    "WINDOW_SAMPLES": 1000,
+    "WINDOW_HZ": 100.0
+  },
+  "feature_order": [
+    "heart_rate", "mean_ibi", "std_ibi", "amp", "std_val", "skew", "kurt",
+    "mean_abs_d1", "max_abs_d1", "mean_abs_d2", "zc_rate", "energy", "peak_density"
+  ],
+  "input_contract": "compute_morphology_reading expects float64/float32-castable array of shape (3, 1000) -- the 3 contiguous 10s windows of one 30s reading, already band-passed/detrended/robust-normalized by preprocess(). Deterministic and label-independent: same input always produces the same output, no randomness, no cross-patient statistics.",
+  "output_contract": "float32 array of shape (13,), equal to the mean of the 3 per-window 13-dim feature vectors."
+}

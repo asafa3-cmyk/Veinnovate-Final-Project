@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "STAGE9-VN001-FINGER-CONTROL-001",
+  "batch_type": "DECISION_EXPERIMENT_RECORD_ONLY",
+  "engineering_only": true,
+  "hardware_uid": "A90AFDAF672D66F1",
+  "short_code": "VN-001",
+  "zone": "FINGERTIP",
+  "config_id": 16,
+  "led_pa_hex": "0x1F",
+  "led_current_ma_approx": 6.2,
+  "adc_range_na": 16384,
+  "capture_duration_s": 30,
+  "capture_sample_count": 3000,
+  "note": "Pipeline sanity check, not part of the Z23 fixture-isolation comparison. Same config 16, same preflight gate, fingertip contact is the easy/high-signal case: if periodicity_index stays ~0 here the problem is upstream of placement (firmware/processing/reference), not location-specific.",
+  "attempts": [
+    {"attempt_ordinal": 1, "zone": "FINGERTIP", "config_id": 16, "fixture_condition": "finger_control", "repetition": 1},
+    {"attempt_ordinal": 2, "zone": "FINGERTIP", "config_id": 16, "fixture_condition": "finger_control", "repetition": 2}
+  ]
+}

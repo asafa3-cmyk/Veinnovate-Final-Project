@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940">
+  <rect width="1600" height="940" fill="white"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#17212b">
+    <text x="70" y="65" font-size="36" font-weight="700">XIAO nRF52840 + MAX30102 + Li-Po switch</text>
+    <text x="70" y="103" font-size="23">Three-lug latching SPDT switch; diagram shows ON</text>
+  </g>
+  <g fill="white" stroke="#17212b" stroke-width="4">
+    <rect x="70" y="130" width="320" height="230" rx="10"/>
+    <rect x="500" y="130" width="420" height="230" rx="10"/>
+    <rect x="500" y="490" width="470" height="360" rx="10"/>
+    <rect x="1110" y="490" width="420" height="360" rx="10"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#17212b">
+    <text x="100" y="182" font-size="29" font-weight="700">Protected Li-Po</text>
+    <text x="100" y="221" font-size="25">3.7 V / 220 mAh</text>
+    <text x="305" y="273" font-size="27" font-weight="700">+</text>
+    <text x="305" y="329" font-size="27" font-weight="700">−</text>
+    <text x="525" y="177" font-size="29" font-weight="700">ON/OFF switch (SPDT)</text>
+    <text x="520" y="275" font-size="23">ON lug</text>
+    <text x="660" y="275" font-size="23">COM</text>
+    <text x="780" y="275" font-size="23">unused</text>
+    <text x="525" y="330" font-size="21">OFF selects the unused lug.</text>
+    <text x="525" y="536" font-size="30" font-weight="700">Seeed XIAO nRF52840</text>
+    <text x="1135" y="536" font-size="30" font-weight="700">MAX30102 module</text>
+    <g font-size="24" font-weight="700">
+      <text x="520" y="575">BAT−</text>
+      <text x="650" y="478">BAT+</text>
+      <text x="855" y="601">GND</text>
+      <text x="855" y="651">3V3</text>
+      <text x="855" y="701">D9 / SDA</text>
+      <text x="855" y="751">D8 / SCL</text>
+      <text x="1130" y="601">GND</text>
+      <text x="1130" y="651">VIN</text>
+      <text x="1130" y="701">SDA</text>
+      <text x="1130" y="751">SCL</text>
+      <text x="1130" y="801">INT — not connected</text>
+    </g>
+  </g>
+  <g fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-width="5">
+    <path d="M390 270 H445 V115 H700 V225" stroke="#c52c2c"/>
+    <path d="M580 225 H460 V440 H680 V490" stroke="#c52c2c"/>
+    <path d="M390 325 H430 V570 H500" stroke="#252b32"/>
+    <path d="M970 590 H1110" stroke="#252b32"/>
+    <path d="M970 640 H1110" stroke="#c52c2c"/>
+    <path d="M970 690 H1110 M970 740 H1110" stroke="#2567a5"/>
+    <path d="M700 225 H580" stroke="#c52c2c"/>
+  </g>
+  <g fill="white" stroke="#17212b" stroke-width="4">
+    <circle cx="580" cy="225" r="9"/>
+    <circle cx="700" cy="225" r="9"/>
+    <circle cx="820" cy="225" r="9"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#17212b" font-size="20">
+    <text x="70" y="890">I2C on D9/D8 requires firmware remapping: Wire.setPins(9, 8) before Wire.begin().</text>
+    <text x="70" y="920">Before wiring: identify COM and the ON lug with a continuity meter on the disconnected switch. Lug order varies by model.</text>
+  </g>
+</svg>

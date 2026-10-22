@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "stage9_z23_poc_experiment_plan",
+  "batch_type": "Z23_POC_IR_COMPARISON",
+  "status": "PREPARED_AWAITING_INDEPENDENT_REVIEW_AND_PHYSICAL_AUTHORIZATION",
+  "experiment_id": "STAGE9-Z23-POC-LED-COMPARISON-001",
+  "scope": "Z23_ENGINEERING_POC_ONLY",
+  "engineering_only": true,
+  "hardware_uid": "A90AFDAF672D66F1",
+  "short_code": "VN-001",
+  "zone": "Z23",
+  "attempt_budget": 3,
+  "automatic_replacement_attempts": 0,
+  "historical_attempts_immutable": true,
+  "attempt_order_fixed": true,
+  "order_time_confound_disclosure_required": true,
+  "locked_settings": {
+    "adc_range_na": 16384,
+    "sample_rate_sps": 400,
+    "sample_avg": 4,
+    "effective_sample_rate_hz": 100,
+    "pulse_width_us": 411,
+    "led_mode": 2,
+    "measurement_pairs": 3000,
+    "measurement_duration_s": 30
+  },
+  "nominal_current_conversion": {
+    "rule": "register_code_decimal_times_0.2_mA",
+    "provenance": "MAX30102 LED pulse-amplitude nominal scale used by the existing Stage 9 profiles",
+    "measurement_status": "NOMINAL_NOT_ELECTRICALLY_MEASURED"
+  },
+  "profiles": [
+    {
+      "attempt": "A",
+      "profile_id": "Z23-POC-R1F-I1F",
+      "config_id": 24,
+      "red_pa": "0x1F",
+      "ir_pa": "0x1F",
+      "red_current_ma_nominal": 6.2,
+      "ir_current_ma_nominal": 6.2
+    },
+    {
+      "attempt": "B",
+      "profile_id": "Z23-POC-R1F-I3E",
+      "config_id": 25,
+      "red_pa": "0x1F",
+      "ir_pa": "0x3E",
+      "red_current_ma_nominal": 6.2,
+      "ir_current_ma_nominal": 12.4
+    },
+    {
+      "attempt": "C",
+      "profile_id": "Z23-POC-R1F-I5E",
+      "config_id": 26,
+      "red_pa": "0x1F",
+      "ir_pa": "0x5E",
+      "red_current_ma_nominal": 6.2,
+      "ir_current_ma_nominal": 18.8
+    }
+  ],
+  "per_profile_phases": [
+    "CAL-NC",
+    "CAL-Z23",
+    "CALIBRATION_REVIEW",
+    "ACQ-01",
+    "PHYSICAL_CLOSURE"
+  ],
+  "calibration": {
+    "no_contact_pairs": 200,
+    "contact_pairs": 200,
+    "same_profile_required": true,
+    "cross_profile_extrapolation_forbidden": true,
+    "fresh_calibration_required": true,
+    "min_contact_dc_multiplier": 3.0,
+    "dc_shift_threshold_pct": 8.0,
+    "clip_value": 262143,
+    "review_before_acquisition": true
+  },
+  "acquisition": {
+    "active_preflight_pairs": 100,
+    "preflight_timeout_s": 3.0,
+    "maximum_preflight_received_pairs": 117,
+    "minimum_firmware_capacity_pairs": 3134,
+    "capture_deadline_s": 45,
+    "preflight_and_window_same_session": true,
+    "restart_forbidden": true,
+    "exposure_change_during_measurement_forbidden": true,
+    "raw_notification_retention": "ALL_ACCEPTED_REJECTED_MALFORMED_AND_STOP_FLIGHT"
+  },
+  "physical_controls": {
+    "right_hand_sensor_location": "flat at Z23 between the second and third metacarpals",
+    "lead_direction": "supported toward the wrist",
+    "settle_before_each_contact_phase_s": 30,
+    "initial_seated_rest_before_attempt_a_s": 300,
+    "minimum_seated_rest_between_cuff_attempts_s": 120,
+    "placement_between_attempts": "RIGHT-hand sensor, hand, forearm, and supported leads remain unchanged unless a stop condition requires removal",
+    "ambient_condition": "stable indoor ambient light with no added cover, shade, or lighting change",
+    "ambient_change_policy": "retain the affected attempt and stop; do not replace it automatically"
+  },
+  "reference": {
+    "device": "Vivocare Guardy Plus upper-arm monitor",
+    "arm": "LEFT",
+    "label": "HOME_CUFF_PULSE_REFERENCE_BPM",
+    "interpretation": "reference label only; not beat-level ground truth, a validated sensor output, a diagnosis, or BP ground truth",
+    "start_instruction": "Press cuff START within two seconds of START CUFF NOW. The acquisition runner waits four seconds, starts PPG, and the retained 30-second window begins after the 100-pair active preflight, nominally about five seconds after the cue.",
+    "timestamps": "retain actual cue UTC, PPG window UTC, displayed pulse, and exact cuff completion UTC when observed; never reconstruct a missing time"
+  },
+  "predeclared_comparison": {
+    "eligibility": "A profile is policy-seed eligible only when calibration review passes and ACQ-01 retains exactly 3000 ordered pairs with zero clipping, zero FIFO overflow, verified identity/config/session/timing, and a passing active preflight.",
+    "primary_channel_comparison": "Because RED is fixed, compare IR headroom, DC/AC behavior, drift_bounded_cardiac_snr_db, dominant_frequency_stability.consistency_score, and absolute difference between 60*IR dominant_hz and the home-cuff pulse label.",
+    "secondary_checks": "Record the same RED fields and RED/IR cardiac-band agreement to expose placement/time drift; do not treat raw correlation, pSNR, a positive spectrum score, or cuff agreement alone as proof of pulse.",
+    "ranking_order": [
+      "recording integrity and safety",
+      "absence of clipping/overflow and adequate headroom",
+      "same-profile contact separation and preflight stability",
+      "IR cardiac stability and SNR",
+      "reference-label frequency difference",
+      "RED stability as a fixed-channel confound indicator"
+    ],
+    "threshold_tuning_after_capture_forbidden": true
+  },
+  "stop_conditions": [
+    "pain, unusual heat, blanching, lasting indentation, or discomfort",
+    "sensor, hand, forearm, lead, cuff, lighting, or placement movement or uncertainty",
+    "identity, configuration, session, calibration, timing, or reference uncertainty",
+    "clipping, FIFO overflow, packet loss, malformed/duplicate/out-of-order data, disconnect, or persistence failure",
+    "missing or non-separating same-profile calibration",
+    "preflight timeout or non-convergence"
+  ],
+  "evidence_reuse": [
+    "stage9_external_evidence/STAGE9B-VN001-C18-Z23-CONTINUITY-011",
+    "stage9_external_evidence/STAGE9B-VN001-C16-Z23-CONTINUITY-012",
+    "stage9_external_evidence/STAGE9B-VN001-C17-Z23-CONTINUITY-014",
+    "stage9_external_evidence/stage9b-z23-randomized-confirmation-18-16-17-summary.json",
+    "stage9_external_evidence/stage9-follow-on-forensic-extension.json",
+    "stage9_external_evidence/stage9-metric-v2.1.0-regression-results.json"
+  ],
+  "historical_verdict": "STAGE9_FAIL",
+  "historical_review_gate_unchanged": true,
+  "legacy_stage10_authorization_unchanged": true,
+  "stage10_may_begin_only_after": "Z23_POC_POLICY_READY"
+}

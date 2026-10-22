@@ -1,0 +1,684 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "veinogate://schemas/jetson-result.schema.json",
+  "title": "Jetson Vitals Result",
+  "description": "Canonical consumer schema for a single vitals/BP result emitted by the Jetson edge service over the WebSocket or REST snapshot API. Producer of record: Hardware_integration_ready. This copy must stay byte-identical (or generated from one shared source) with the producer's schema; see scripts/check-schema-drift.mjs.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "message_type",
+    "result_state",
+    "reading_id",
+    "session_id",
+    "patient_id",
+    "device_id",
+    "acquisition_start_utc",
+    "acquisition_end_utc",
+    "emitted_at_utc",
+    "connection",
+    "bp",
+    "hr",
+    "spo2",
+    "calibration",
+    "sqi",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Semver of this message shape. Dashboard must fail visibly (UNSUPPORTED_SCHEMA) on any version not in its supported set.",
+      "enum": [
+        "1.1.0"
+      ]
+    },
+    "message_type": {
+      "type": "string",
+      "enum": [
+        "vitals_result"
+      ]
+    },
+    "result_state": {
+      "type": "string",
+      "description": "The single authoritative top-level clinical result state. Internal UI states are deterministic derivations of this value and must never introduce a competing clinical meaning.",
+      "enum": [
+        "VALID",
+        "ABSTAIN",
+        "RECALIBRATE",
+        "INFERENCE_ERROR",
+        "DEVICE_DISCONNECTED"
+      ]
+    },
+    "reading_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "patient_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "device_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acquisition_start_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acquisition_end_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "emitted_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "CONNECTED",
+            "RECONNECTING",
+            "DISCONNECTED"
+          ]
+        },
+        "data_age_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "bp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sbp_mmhg",
+        "dbp_mmhg",
+        "unit",
+        "valid"
+      ],
+      "properties": {
+        "sbp_mmhg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "dbp_mmhg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": "string",
+          "enum": [
+            "mmHg"
+          ]
+        },
+        "valid": {
+          "type": "boolean"
+        }
+      }
+    },
+    "hr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bpm",
+        "valid",
+        "status",
+        "reason",
+        "algorithm_name",
+        "algorithm_version",
+        "experimental",
+        "window_start_utc",
+        "window_end_utc"
+      ],
+      "properties": {
+        "bpm": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "valid": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "UNAVAILABLE",
+            "VALID",
+            "ABSTAIN"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "algorithm_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "algorithm_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "experimental": {
+          "const": true
+        },
+        "window_start_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "window_end_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "valid": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "const": "VALID"
+              },
+              "bpm": {
+                "type": "number"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "UNAVAILABLE",
+                  "ABSTAIN"
+                ]
+              },
+              "bpm": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "VALID"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "valid": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "spo2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pct",
+        "status"
+      ],
+      "description": "MAX30102 supplies raw RED/IR only. pct must be null and status UNAVAILABLE until a versioned, validated SpO2 algorithm result is supplied by the backend.",
+      "properties": {
+        "pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "UNAVAILABLE",
+            "VALID",
+            "INVALID"
+          ]
+        },
+        "algorithm_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "algorithm_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "VALID"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "algorithm_name",
+              "algorithm_version"
+            ],
+            "properties": {
+              "pct": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "algorithm_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "algorithm_version": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "UNAVAILABLE",
+                  "INVALID"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "pct": {
+                "const": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    "calibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "calibration_id",
+        "calibrated_at_utc",
+        "warning_threshold_seconds",
+        "expiry_threshold_seconds",
+        "age_seconds",
+        "reason"
+      ],
+      "description": "Jetson is authoritative for calibration status and thresholds. The dashboard must not substitute hidden default thresholds; a message missing these fields is malformed and must be rejected.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "UNCALIBRATED",
+            "CALIBRATING",
+            "CALIBRATED",
+            "RECALIBRATION_DUE",
+            "EXPIRED",
+            "SENSOR_REPOSITIONED",
+            "CALIBRATION_FAILED"
+          ]
+        },
+        "calibration_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "calibrated_at_utc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "warning_threshold_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "expiry_threshold_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "age_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "sqi": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted",
+        "reason_codes",
+        "metrics"
+      ],
+      "properties": {
+        "accepted": {
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "NO_PACKETS",
+              "SAMPLE_RATE_CHANGED",
+              "MALFORMED_PACKET",
+              "DUPLICATE_OR_REORDERED_SAMPLE",
+              "PACKET_LOSS",
+              "FIFO_OVERFLOW",
+              "SATURATION_FLAG",
+              "CLIPPING",
+              "CONTACT_CHANGED",
+              "EXCESSIVE_MOTION",
+              "WINDOW_LENGTH",
+              "NONFINITE",
+              "POOR_CONTACT",
+              "RED_SQI_CORRELATION",
+              "RED_SQI_PULSATILITY",
+              "RESAMPLE_LENGTH",
+              "FLATLINE",
+              "UNKNOWN"
+            ]
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "red_ir_correlation": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "red_pulsatility": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "packet_loss_fraction": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 1
+            },
+            "duplicate_or_reordered_count": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "overflow_count": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "sample_count": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_name",
+        "model_version",
+        "model_sha256",
+        "onnx_opset",
+        "preprocessing_version",
+        "morphology_version",
+        "sqi_version",
+        "calibration_protocol_version",
+        "ble_protocol_version",
+        "sensor_config_version"
+      ],
+      "properties": {
+        "model_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "onnx_opset": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "preprocessing_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "morphology_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sqi_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "calibration_protocol_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ble_protocol_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sensor_config_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result_state": {
+            "const": "VALID"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "bp": {
+            "required": [
+              "sbp_mmhg",
+              "dbp_mmhg",
+              "valid"
+            ],
+            "properties": {
+              "sbp_mmhg": {
+                "type": "number"
+              },
+              "dbp_mmhg": {
+                "type": "number"
+              },
+              "valid": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result_state": {
+            "enum": [
+              "ABSTAIN",
+              "RECALIBRATE",
+              "INFERENCE_ERROR",
+              "DEVICE_DISCONNECTED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "bp": {
+            "properties": {
+              "sbp_mmhg": {
+                "const": null
+              },
+              "dbp_mmhg": {
+                "const": null
+              },
+              "valid": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result_state": {
+            "const": "RECALIBRATE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "calibration": {
+            "required": [
+              "status",
+              "reason"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result_state": {
+            "const": "ABSTAIN"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "sqi": {
+            "properties": {
+              "reason_codes": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

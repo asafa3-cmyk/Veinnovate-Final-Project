@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "veinogate://schemas/jetson-ws-envelope.schema.json",
+  "title": "Jetson WebSocket Envelope",
+  "description": "Every frame received on the Jetson WebSocket must be one of these envelope shapes before its payload is validated against jetson-result.schema.json. Producer of record: Hardware_integration_ready.",
+  "type": "object",
+  "required": ["schema_version", "message_type"],
+  "properties": {
+    "schema_version": { "type": "string", "enum": ["1.0.0"] },
+    "message_type": {
+      "type": "string",
+      "enum": ["vitals_result", "connection_state", "alarm_event"]
+    }
+  },
+  "oneOf": [
+    { "$ref": "veinogate://schemas/jetson-result.schema.json" },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "message_type", "status", "emitted_at_utc"],
+      "properties": {
+        "schema_version": { "type": "string", "enum": ["1.0.0"] },
+        "message_type": { "const": "connection_state" },
+        "status": { "type": "string", "enum": ["CONNECTED", "RECONNECTING", "DISCONNECTED"] },
+        "emitted_at_utc": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "message_type", "alarm_id", "kind", "emitted_at_utc"],
+      "properties": {
+        "schema_version": { "type": "string", "enum": ["1.0.0"] },
+        "message_type": { "const": "alarm_event" },
+        "alarm_id": { "type": "string" },
+        "kind": { "type": "string", "enum": ["PHYSIOLOGICAL", "TECHNICAL"] },
+        "reading_id": { "type": ["string", "null"] },
+        "emitted_at_utc": { "type": "string", "format": "date-time" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "veinnet_runtime_demographics_contract_v1",
+  "contract_version": "1.0.0",
+  "source": {
+    "manifest_file": "gate7_max30102_personaldelta/gemini_stage/demographics/MANIFEST.json",
+    "manifest_sha256": "fef6d1e62dcdf75bd55b5eee9222ba555b85d3db48320cc588313f58d4f21e24",
+    "implementation_note": "veinnet_runtime.preprocessing.demographics.demographics_transform() is a DIRECT IMPLEMENTATION of this manifest's feature_schema.contract and train_normalization stats. It is NOT training source code copied verbatim from the repository -- no equivalent single-reading (age, sex) -> vector transform exists upstream; gate7_max30102_personaldelta/demographics.py only re-validates the precomputed per-cohort .npy arrays against this same manifest hash. The runtime function was written fresh from the documented contract and approved for inclusion 2026-09-01."
+  },
+  "feature_names": ["age_z", "is_female", "age_missing", "sex_missing"],
+  "train_age_mean": 59.82504970178926,
+  "train_age_std": 15.9430331873034,
+  "train_age_ddof": 1,
+  "transform": {
+    "age_z": "0.0 if age is missing else (age - train_age_mean) / train_age_std",
+    "is_female": "1.0 only if sex == canonical_female ('F'); 0.0 for canonical male ('M') or missing/unknown",
+    "age_missing": "1.0 if age is missing else 0.0",
+    "sex_missing": "1.0 if sex is missing/unknown else 0.0"
+  },
+  "canonical_sex_values": {"female": "F", "male": "M"},
+  "canonicalization_policy": "The frozen transform accepts only the exact strings 'F', 'M', or None for sex -- it performs no case-folding or synonym mapping (e.g. 'female', 'male', 'f', 'm' are all rejected with ValueError). A separate, explicitly documented adapter -- outside this frozen module -- may canonicalize external representations before calling demographics_transform().",
+  "input_validation_added_for_runtime_safety": {
+    "age_type": "must be int or float (not bool) or None; TypeError otherwise",
+    "age_finite": "must be finite (not NaN/inf) when provided; ValueError otherwise",
+    "age_plausible_range": "[0, 130] years when provided; ValueError otherwise -- this bound is a runtime input-validation guard, NOT part of the frozen manifest transform math, added because the manifest contract only specifies the transform for already-plausible ages",
+    "sex_type": "must be exactly 'F', 'M', or None; ValueError otherwise (see canonicalization_policy)"
+  },
+  "output_contract": {
+    "scalar": "numpy.float32 array, shape (4,), order [age_z, is_female, age_missing, sex_missing]",
+    "batch": "veinnet_runtime.preprocessing.demographics.demographics_transform_batch(rows) stacks demographics_transform() per row deterministically; numpy.float32 array, shape (len(rows), 4)"
+  }
+}

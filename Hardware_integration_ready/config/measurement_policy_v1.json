@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "STAGE16-ALTERNATIVE2-v1",
+  "scheduled_interval_s": 1800,
+  "capture_deadline_s": 40
+}

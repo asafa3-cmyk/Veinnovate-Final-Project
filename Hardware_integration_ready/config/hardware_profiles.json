@@ -1,0 +1,44 @@
+{
+  "_comment": "MAX30102 register profiles. Mirrors firmware/veinnet_sensor_v1/common/sensor_profiles.h — keep both in sync by hand.",
+  "schema_version": "1.0.0",
+  "profiles": {
+    "dorsal": {
+      "config_id": 2,
+      "led_brightness_hex": "0x7F",
+      "led_current_ma_approx": 25.4,
+      "sample_avg": 4,
+      "led_mode": 2,
+      "sample_rate_sps": 400,
+      "pulse_width_us": 411,
+      "adc_range_na": 16384,
+      "effective_paired_sample_rate_hz": 100,
+      "presence_threshold_raw_ir": 8000,
+      "auto_exposure_bounds_ma": [6.0, 51.0]
+    },
+    "fingertip": {
+      "config_id": 1,
+      "led_brightness_hex": "0x1F",
+      "led_current_ma_approx": 6.2,
+      "sample_avg": 4,
+      "led_mode": 2,
+      "sample_rate_sps": 400,
+      "pulse_width_us": 411,
+      "adc_range_na": 4096,
+      "effective_paired_sample_rate_hz": 100,
+      "presence_threshold_raw_ir": 50000,
+      "auto_exposure_bounds_ma": [2.0, 30.0]
+    }
+  },
+  "battery": {
+    "cell": "Li-Po 3.7V 220mAh",
+    "charge_current_pin": "P0.13",
+    "charge_current_50ma_level": "HIGH",
+    "charge_current_100ma_level": "LOW",
+    "default_charge_current_ma": 50,
+    "_note": "Corrects the historical firmware's inverted HIGH/LOW comment (integration spec S8).",
+    "battery_mv_full": 4200,
+    "battery_mv_empty": 3300,
+    "battery_mv_low_warning": 3500,
+    "battery_mv_critical": 3400
+  }
+}

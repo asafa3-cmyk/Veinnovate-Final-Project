@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "veinnet-hardware://schemas/qa-capture-record.schema.json",
+  "title": "QA Capture Record",
+  "description": "Non-clinical, PHI-free engineering capture format for bench validation and regression testing of the raw acquisition pipeline (Stage 7). Not sent to VeinoGate and not a substitute for schemas/jetson-result.schema.json or receiver/sqi_gate.py. See docs/QA_CAPTURE_FORMAT_SPEC.md.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_type",
+    "capture_id",
+    "device",
+    "session",
+    "register_settings",
+    "timing",
+    "samples",
+    "integrity",
+    "quality_metrics",
+    "validation"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "enum": ["1.0.0", "1.1.0"] },
+    "timestamp_semantics": { "const": "PACKET_CONSTRUCTION_NOT_ACQUISITION" },
+    "physical_sampling_verified": { "const": false },
+    "record_type": { "type": "string", "enum": ["qa_capture_record"] },
+    "capture_id": { "type": "string", "minLength": 1 },
+    "device": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hardware_uid", "short_code"],
+      "properties": {
+        "hardware_uid": { "type": "string", "minLength": 1 },
+        "short_code": { "type": "string", "pattern": "^VN-[0-9]{3,}$" }
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sensor_session_id", "sensor_config_id", "sensor_config_name"],
+      "properties": {
+        "sensor_session_id": { "type": "integer", "minimum": 0 },
+        "sensor_config_id": { "type": "integer", "minimum": 0 },
+        "sensor_config_name": { "type": "string", "enum": ["UNVERIFIED", "FINGERTIP", "DORSAL"] }
+      }
+    },
+    "register_settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sample_rate_sps",
+        "sample_avg",
+        "effective_sample_rate_hz",
+        "pulse_width_us",
+        "led_mode",
+        "led_brightness_hex",
+        "adc_range_na"
+      ],
+      "properties": {
+        "sample_rate_sps": { "const": 400 },
+        "sample_avg": { "const": 4 },
+        "effective_sample_rate_hz": { "const": 100 },
+        "pulse_width_us": { "const": 411 },
+        "led_mode": { "type": "integer", "minimum": 0 },
+        "led_brightness_hex": { "type": "string", "minLength": 1 },
+        "adc_range_na": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "device_monotonic_timestamp_start_us",
+        "device_monotonic_timestamp_end_us",
+        "capture_start_utc",
+        "capture_end_utc",
+        "window_duration_s"
+      ],
+      "properties": {
+        "device_monotonic_timestamp_start_us": { "type": "integer", "minimum": 0 },
+        "device_monotonic_timestamp_end_us": { "type": "integer", "minimum": 0 },
+        "capture_start_utc": { "type": "string", "format": "date-time" },
+        "capture_end_utc": { "type": "string", "format": "date-time" },
+        "window_duration_s": { "const": 30 }
+      }
+    },
+    "samples": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["first_sample_index", "last_sample_index", "count", "red", "ir"],
+      "properties": {
+        "first_sample_index": { "type": "integer", "minimum": 0 },
+        "last_sample_index": { "type": "integer", "minimum": 0 },
+        "count": { "type": "integer", "minimum": 1, "maximum": 3000 },
+        "red": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 262143 } },
+        "ir": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 262143 } }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_samples",
+        "received_samples",
+        "lost_samples",
+        "packet_loss_fraction",
+        "duplicate_samples",
+        "out_of_order_packets",
+        "fifo_overflow_count",
+        "session_changed",
+        "config_changed"
+      ],
+      "properties": {
+        "expected_samples": { "const": 3000 },
+        "received_samples": { "type": "integer", "minimum": 0, "maximum": 3000 },
+        "lost_samples": { "type": "integer", "minimum": 0 },
+        "packet_loss_fraction": { "type": "number", "minimum": 0, "maximum": 1 },
+        "duplicate_samples": { "type": "integer", "minimum": 0 },
+        "out_of_order_packets": { "type": "integer", "minimum": 0 },
+        "fifo_overflow_count": { "type": "integer", "minimum": 0 },
+        "software_overflow_count": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "acquisition_uncertainty": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "loss_evidence_available": { "type": "boolean" },
+        "session_changed": { "type": "boolean" },
+        "config_changed": { "type": "boolean" }
+      }
+    },
+    "quality_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["red", "ir", "red_ir_correlation"],
+      "properties": {
+        "red": { "$ref": "#/$defs/channel_metrics" },
+        "ir": { "$ref": "#/$defs/channel_metrics" },
+        "red_ir_correlation": { "type": "number", "minimum": -1, "maximum": 1 }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["valid", "violated_rules"],
+      "properties": {
+        "valid": { "type": "boolean" },
+        "violated_rules": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "SCHEMA_INVALID",
+              "SAMPLE_COUNT_MISMATCH",
+              "INCOMPLETE_WINDOW",
+              "PACKET_LOSS",
+              "DUPLICATE_SAMPLES",
+              "OUT_OF_ORDER",
+              "FIFO_OVERFLOW",
+              "SOFTWARE_ACQUISITION_OVERFLOW",
+              "ACQUISITION_CONTINUITY_UNCERTAIN",
+              "SESSION_OR_CONFIG_CHANGED",
+              "CLIPPING",
+              "POOR_CONTACT",
+              "LOW_RED_IR_CORRELATION",
+              "LOW_PULSATILITY",
+              "FLATLINE",
+              "LOW_PSNR",
+              "NONFINITE_SAMPLE"
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "valid": { "const": true } } },
+          "then": { "properties": { "violated_rules": { "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "valid": { "const": false } } },
+          "then": { "properties": { "violated_rules": { "minItems": 1 } } }
+        }
+      ]
+    }
+  },
+  "allOf": [{
+    "if": { "properties": { "schema_version": { "const": "1.1.0" } }, "required": ["schema_version"] },
+    "then": { "required": ["timestamp_semantics", "physical_sampling_verified"], "properties": { "integrity": { "required": ["software_overflow_count", "acquisition_uncertainty", "loss_evidence_available"] } } }
+  }],
+  "$defs": {
+    "channel_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dc", "ac_rms", "pulsatility", "clipped_fraction", "psnr_db"],
+      "properties": {
+        "dc": { "type": "number", "minimum": 0 },
+        "ac_rms": { "type": "number", "minimum": 0 },
+        "pulsatility": { "type": "number", "minimum": 0 },
+        "clipped_fraction": { "type": "number", "minimum": 0, "maximum": 1 },
+        "psnr_db": { "type": "number", "minimum": -120, "maximum": 120 }
+      }
+    }
+  }
+}

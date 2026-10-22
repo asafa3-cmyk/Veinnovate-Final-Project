@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "STAGE9-VN001-Z23-FIXTURE-ISOLATION-001",
+  "batch_type": "DECISION_EXPERIMENT_RECORD_ONLY",
+  "engineering_only": true,
+  "hardware_uid": "A90AFDAF672D66F1",
+  "short_code": "VN-001",
+  "zone": "Z23",
+  "config_id": 16,
+  "led_pa_hex": "0x1F",
+  "led_current_ma_approx": 6.2,
+  "adc_range_na": 16384,
+  "capture_duration_s": 30,
+  "capture_sample_count": 3000,
+  "note": "ADC range, LED current, and filters are unchanged from config 16 across both conditions -- only the physical contact setup (fixture_condition) changes between attempts.",
+  "preflight": {
+    "module": "receiver/preflight_stability.py",
+    "note": "preflight samples are the prefix of the 3000-sample measurement window, not a discarded separate capture -- consistent with priority-2 design (pass -> start real window immediately, no power-cycle)."
+  },
+  "attempts": [
+    {"attempt_ordinal": 1, "zone": "Z23", "config_id": 16, "fixture_condition": "plain", "repetition": 1},
+    {"attempt_ordinal": 2, "zone": "Z23", "config_id": 16, "fixture_condition": "fixture_isolated", "repetition": 1},
+    {"attempt_ordinal": 3, "zone": "Z23", "config_id": 16, "fixture_condition": "plain", "repetition": 2},
+    {"attempt_ordinal": 4, "zone": "Z23", "config_id": 16, "fixture_condition": "fixture_isolated", "repetition": 2},
+    {"attempt_ordinal": 5, "zone": "Z23", "config_id": 16, "fixture_condition": "plain", "repetition": 3},
+    {"attempt_ordinal": 6, "zone": "Z23", "config_id": 16, "fixture_condition": "fixture_isolated", "repetition": 3},
+    {"attempt_ordinal": 7, "zone": "Z23", "config_id": 16, "fixture_condition": "plain", "repetition": 4},
+    {"attempt_ordinal": 8, "zone": "Z23", "config_id": 16, "fixture_condition": "fixture_isolated", "repetition": 4}
+  ]
+}

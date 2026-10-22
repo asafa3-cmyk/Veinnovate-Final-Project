@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "STAGE10-Z23-POC-EXPOSURE-v1",
+  "status": "PROPOSED_AWAITING_INDEPENDENT_REVIEW",
+  "scope": "Z23_ENGINEERING_POC_ONLY",
+  "clinical_validation": false,
+  "stage10_runtime_authorized": false,
+  "current_representation": {
+    "register_values": ["0x1F", "0x3E", "0x5E"],
+    "nominal_current_ma": {"0x1F": 6.2, "0x3E": 12.4, "0x5E": 18.8},
+    "nominal_not_electrically_measured": true
+  },
+  "fixed_acquisition": {
+    "adc_range_na": 16384,
+    "sample_rate_sps": 400,
+    "sample_avg": 4,
+    "effective_sample_rate_hz": 100,
+    "pulse_width_us": 411,
+    "led_mode": 2,
+    "measurement_pairs": 3000,
+    "measurement_duration_s": 30
+  },
+  "initial_seed": {
+    "red_pa": "0x1F",
+    "ir_pa": "0x3E",
+    "basis": "Attempt B provides the middle observed IR exposure with substantially more IR headroom than Attempt C. Attempt C improved reference agreement and correlation but reduced headroom and dominant-frequency consistency; therefore C is an upward adjustment target, not the default seed."
+  },
+  "independent_hard_bounds": {
+    "red": {"minimum_pa": "0x1F", "maximum_pa": "0x5E"},
+    "ir": {"minimum_pa": "0x1F", "maximum_pa": "0x5E"},
+    "classification": "PROVISIONAL_ENGINEERING_LIMITS",
+    "basis": "All values are at or below the historically retained equal-current 0x5E/0x5E Z23 exposure. The new experiment physically retained 0x1F/0x1F, 0x1F/0x3E, and 0x1F/0x5E without clipping or adverse findings."
+  },
+  "allowed_pairs": [
+    {"red_pa": "0x1F", "ir_pa": "0x1F", "evidence": "Attempt A config 24"},
+    {"red_pa": "0x1F", "ir_pa": "0x3E", "evidence": "Attempt B config 25"},
+    {"red_pa": "0x1F", "ir_pa": "0x5E", "evidence": "Attempt C config 26"},
+    {"red_pa": "0x3E", "ir_pa": "0x3E", "evidence": "historical config 17 Z23 retained windows"},
+    {"red_pa": "0x5E", "ir_pa": "0x5E", "evidence": "historical config 18 Z23 retained windows"}
+  ],
+  "unobserved_combinations_forbidden": true,
+  "adjacent_levels": {
+    "0x1F": {"up": "0x3E", "down": null},
+    "0x3E": {"up": "0x5E", "down": "0x1F"},
+    "0x5E": {"up": null, "down": "0x3E"}
+  },
+  "preflight": {
+    "total_deadline_s": 5.0,
+    "evaluation_pairs": 100,
+    "block_pairs": 50,
+    "maximum_adjustment_events": 2,
+    "maximum_evaluations": 3,
+    "same_pair_contact_baseline_required": true,
+    "minimum_contact_dc_multiplier": 3.0,
+    "minimum_usable_dc_counts": 15000,
+    "maximum_target_dc_counts": 100000,
+    "near_saturation_raw_count": 209714,
+    "clip_value": 262143,
+    "maximum_dc_shift_pct": 8.0,
+    "threshold_classification": {
+      "minimum_contact_dc_multiplier": "FROZEN_MEASURED_EXPERIMENT_RULE",
+      "maximum_dc_shift_pct": "FROZEN_MEASURED_EXPERIMENT_RULE",
+      "minimum_usable_dc_counts": "PROVISIONAL_ENGINEERING_LIMIT_DERIVED_FROM_LOWEST_RETAINED_A_B_C_CHANNEL_DC",
+      "maximum_target_dc_counts": "PROVISIONAL_ENGINEERING_LIMIT_ABOVE_OBSERVED_Z23_DC_ENVELOPE",
+      "near_saturation_raw_count": "PROVISIONAL_80_PERCENT_ADC_GUARDRAIL",
+      "clip_value": "HARDWARE_DATA_FORMAT_LIMIT"
+    },
+    "convergence": {
+      "all_required": [
+        "identity, session, configuration, rate, ordering, timestamps, and checksums valid",
+        "zero FIFO overflow and zero clipped samples",
+        "each channel mean DC is at least max(15000, 3 times its same-pair no-contact baseline)",
+        "each channel mean DC is at most 100000 counts",
+        "each channel raw maximum is below 209714 counts",
+        "relative DC shift between the two consecutive 50-pair blocks is at most 8 percent",
+        "the selected RED/IR pair is explicitly allowed"
+      ],
+      "cardiac_frequency_not_used_for_exposure_convergence": true,
+      "psnr_not_used_for_exposure_convergence": true
+    },
+    "adjustment": {
+      "weak_channel": "increase only that channel by one adjacent level when the resulting pair is allowed",
+      "excessive_dc_or_low_headroom": "decrease only that channel by one adjacent level when the resulting pair is allowed",
+      "both_channels_out_of_range": "decide each channel independently, then require the resulting pair to be allowed",
+      "unavailable_transition": "ABSTAIN; do not force the other channel to move",
+      "exposure_change_effect": "discard the current evaluation and restart the 100-pair stability evaluation at the new pair"
+    },
+    "oscillation": {
+      "definition": "any revisit of a previously evaluated RED/IR pair or reversal of either channel before convergence",
+      "action": "ABSTAIN"
+    }
+  },
+  "failure_conditions": [
+    "NO_SAME_PAIR_CALIBRATION",
+    "NO_CONTACT_OR_WEAK_SIGNAL_AT_BOUND",
+    "CLIPPING",
+    "NEAR_SATURATION_AT_BOUND",
+    "FIFO_OVERFLOW",
+    "IDENTITY_CONFIG_SESSION_RATE_OR_TIMING_FAILURE",
+    "NON_CONVERGENCE",
+    "OSCILLATION",
+    "PREFLIGHT_TIMEOUT",
+    "UNALLOWED_PAIR_REQUIRED",
+    "DISCONNECTION_OR_PERSISTENCE_FAILURE"
+  ],
+  "measurement_freeze": {
+    "after_convergence": true,
+    "freeze_red_ir_adc_rate_average_and_pulse_width": true,
+    "no_restart_at_preflight_to_measurement_transition": true,
+    "configuration_change_invalidates_window": true,
+    "calibration_binding": "device, sensor session, Z23, exact RED/IR pair, and policy ID/hash"
+  },
+  "evidence": {
+    "frozen_experiment_plan_sha256": "905cfda855fbefc8c372dd29ba8ac3fbae71eae6f53085042c4a1bb08d0668e8",
+    "attempt_a_reverification_sha256": "8d38b66b40ba78cdaff04f970fe88b3a46c8479d077379b78d40503247a7243d",
+    "attempt_b_acq_sha256": "87eddf5ee45a5fadaa38794127f8fce7ddcab84f5f248b8890ec23c38d2cf028",
+    "attempt_c_acq_sha256": "5712caa37c12106f85dd293d3bba71849556392b7c9c517c139f64c3cf7e9800",
+    "historical_18_16_17_summary_sha256": "b49a9aa5b3733c9e5896dd2699051cd5611e3b465cba7a0400efffb6c980df1a",
+    "forensic_extension_sha256": "aae0706b8b99e76a9b58f2f8653b0413437687d512091675b059c1ac9710596c",
+    "metric_v2_1_0_regression_sha256": "3b36844dafffdcd7dd210aac72be3a9a1f2d7f8af5be6e46f63dd8f4b6bb6837"
+  },
+  "limitations": [
+    "Only the five listed pairs have retained Z23 evidence; other Cartesian combinations are forbidden.",
+    "LED currents are nominal register conversions, not electrical measurements.",
+    "Attempt order and time remain confounded.",
+    "Home-cuff pulse is a reference label, not beat-level or clinical ground truth.",
+    "Attempt A's cuff pulse value is absent from shared evidence and is not reconstructed.",
+    "The provisional DC and headroom guardrails require finite Stage 10 verification before runtime authorization."
+  ],
+  "exit_gate": {
+    "required_review_verdict": "Z23_POC_POLICY_READY",
+    "independent_review_pending": true,
+    "stage10_may_begin": false
+  }
+}

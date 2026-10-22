@@ -1,0 +1,620 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Protected session bedside care v1",
+  "description": "Identity API only; explicit operator-declared attribution. CUFF-PPG-HOST-ASSOCIATION-v1 permits +/-120 seconds from verified host receipt interval, never arbitrary historical PPG. No capture side effect.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/status"
+    },
+    {
+      "$ref": "#/$defs/cuffResult"
+    },
+    {
+      "$ref": "#/$defs/locationResult"
+    },
+    {
+      "$ref": "#/$defs/history"
+    }
+  ],
+  "$defs": {
+    "staff": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operator_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "shift": {
+          "enum": [
+            "morning",
+            "afternoon",
+            "night"
+          ]
+        },
+        "nurse_in_charge": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        }
+      },
+      "required": [
+        "operator_name",
+        "shift",
+        "nurse_in_charge"
+      ]
+    },
+    "cuffRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sbp": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dbp": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "measured_at_utc": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "baseline_reading_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "staff": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operator_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "shift": {
+              "enum": [
+                "morning",
+                "afternoon",
+                "night"
+              ]
+            },
+            "nurse_in_charge": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "required": [
+            "operator_name",
+            "shift",
+            "nurse_in_charge"
+          ]
+        }
+      },
+      "required": [
+        "sbp",
+        "dbp",
+        "measured_at_utc",
+        "staff"
+      ]
+    },
+    "locationRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "department": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bed": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "staff": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operator_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "shift": {
+              "enum": [
+                "morning",
+                "afternoon",
+                "night"
+              ]
+            },
+            "nurse_in_charge": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "required": [
+            "operator_name",
+            "shift",
+            "nurse_in_charge"
+          ]
+        }
+      },
+      "required": [
+        "department",
+        "bed",
+        "staff"
+      ]
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {
+          "const": "1.0.0"
+        },
+        "session_id": {
+          "type": "string"
+        },
+        "calibration_status": {
+          "enum": [
+            "MISSING",
+            "VALID",
+            "WARNING",
+            "EXPIRED",
+            "INVALIDATED"
+          ]
+        },
+        "calibration_outcome": {
+          "enum": [
+            "NONE",
+            "PENDING",
+            "ACTIVE",
+            "REJECTED"
+          ]
+        },
+        "baseline_reading_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "last_communication_at_utc": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "next_measurement_at_utc": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "scheduled_interval_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "schedule_enabled": {
+          "type": "boolean"
+        },
+        "capture_available": {
+          "type": "boolean"
+        },
+        "connection_status": {
+          "enum": [
+            "CONNECTED",
+            "CONNECTING",
+            "DISCONNECTED"
+          ]
+        },
+        "acquisition_state": {
+          "type": "string"
+        },
+        "warning_after_s": {
+          "const": 14400
+        },
+        "hard_expiry_s": {
+          "const": 21600
+        },
+        "calibrated_at_utc": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "age_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "calibration_reason_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "contract_version",
+        "session_id",
+        "calibration_status",
+        "calibration_outcome",
+        "baseline_reading_id",
+        "last_communication_at_utc",
+        "next_measurement_at_utc",
+        "scheduled_interval_s",
+        "schedule_enabled",
+        "capture_available",
+        "connection_status",
+        "acquisition_state",
+        "warning_after_s",
+        "hard_expiry_s",
+        "calibrated_at_utc",
+        "age_seconds"
+      ]
+    },
+    "cuffResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {
+          "const": "1.0.0"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "sbp": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dbp": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "measured_at_utc": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "baseline_reading_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "staff": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operator_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "shift": {
+              "enum": [
+                "morning",
+                "afternoon",
+                "night"
+              ]
+            },
+            "nurse_in_charge": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "assurance": {
+              "const": "OPERATOR_DECLARED"
+            }
+          },
+          "required": [
+            "operator_name",
+            "shift",
+            "nurse_in_charge",
+            "assurance"
+          ]
+        },
+        "entered_at_utc": {
+          "type": "number"
+        },
+        "outcome": {
+          "enum": [
+            "PENDING",
+            "ACTIVE",
+            "REJECTED"
+          ]
+        },
+        "reason_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "calibration_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "contract_version",
+        "record_id",
+        "sbp",
+        "dbp",
+        "measured_at_utc",
+        "baseline_reading_id",
+        "staff",
+        "entered_at_utc",
+        "outcome",
+        "reason_code",
+        "calibration_id"
+      ]
+    },
+    "locationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {
+          "const": "1.0.0"
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "entered_at_utc": {
+          "type": "number"
+        },
+        "department": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bed": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "contract_version",
+        "record_id",
+        "entered_at_utc",
+        "department",
+        "bed"
+      ]
+    },
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_version": {
+          "const": "1.0.0"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "record_id": {
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "CUFF_ENTERED",
+                  "CALIBRATION_OUTCOME",
+                  "LOCATION_UPDATED"
+                ]
+              },
+              "recorded_at_utc": {
+                "type": "number"
+              },
+              "staff": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "operator_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "shift": {
+                    "enum": [
+                      "morning",
+                      "afternoon",
+                      "night"
+                    ]
+                  },
+                  "nurse_in_charge": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "assurance": {
+                    "const": "OPERATOR_DECLARED"
+                  }
+                },
+                "required": [
+                  "operator_name",
+                  "shift",
+                  "nurse_in_charge",
+                  "assurance"
+                ]
+              },
+              "sbp": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "dbp": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "measured_at_utc": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "baseline_reading_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "entered_at_utc": {
+                "type": "number"
+              },
+              "outcome": {
+                "enum": [
+                  "PENDING",
+                  "ACTIVE",
+                  "REJECTED"
+                ]
+              },
+              "reason_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "calibration_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cuff_record_id": {
+                "type": "string"
+              },
+              "association_rule": {
+                "type": "string"
+              },
+              "old": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "department": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "bed": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "department",
+                  "bed"
+                ]
+              },
+              "new": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "department": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "bed": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "department",
+                  "bed"
+                ]
+              }
+            },
+            "required": [
+              "record_id",
+              "type",
+              "recorded_at_utc",
+              "staff"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "CUFF_ENTERED"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "sbp",
+                    "dbp",
+                    "measured_at_utc",
+                    "entered_at_utc",
+                    "outcome",
+                    "reason_code",
+                    "calibration_id"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "CALIBRATION_OUTCOME"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "cuff_record_id",
+                    "baseline_reading_id",
+                    "outcome",
+                    "reason_code",
+                    "calibration_id"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "LOCATION_UPDATED"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "old",
+                    "new"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "contract_version",
+        "records"
+      ]
+    }
+  }
+}

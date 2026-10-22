@@ -1,0 +1,6 @@
+{
+  "_comment": "Calibration expiry thresholds. Jetson-configurable per integration spec S7 — 4h/6h are production defaults, never 86400s.",
+  "schema_version": "1.0.0",
+  "warning_after_s": 14400,
+  "hard_expiry_s": 21600
+}

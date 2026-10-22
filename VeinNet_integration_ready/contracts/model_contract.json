@@ -1,0 +1,107 @@
+{
+  "schema": "veinnet_runtime_model_contract_v1",
+  "contract_version": "1.1.0",
+  "supersedes": {
+    "contract_version": "1.0.0",
+    "model_sha256": "cb320a28b0abd48c2f6e34828c83b50ecce3c1f0c30f7fc8402b964cd74c8cd0"
+  },
+  "model": {
+    "relative_path": "model/personaldelta_timeindependent_ensemble_42_43_44.onnx",
+    "sha256": "1f017653c5c4bba4ee1a96e97e18d4c97f672ce32f98c0e60f3bd31a5eb06e03",
+    "opset": 17,
+    "opset_domain": "",
+    "output_semantics": "personal_bp = baseline_cuff + mean(delta_head outputs across 3 retrained head seeds 42/43/44). Delta heads take no elapsed input. Absolute heads and encoder are bit-identical to model cb320a28... Values are absolute [SBP, DBP], not deltas.",
+    "bytes": 5834879
+  },
+  "inputs": [
+    {
+      "name": "ppg",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        3,
+        1000
+      ]
+    },
+    {
+      "name": "morphology",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        13
+      ]
+    },
+    {
+      "name": "baseline_ppg",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        3,
+        1000
+      ]
+    },
+    {
+      "name": "baseline_morphology",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        13
+      ]
+    },
+    {
+      "name": "demographics",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        4
+      ]
+    },
+    {
+      "name": "baseline_cuff",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        2
+      ]
+    },
+    {
+      "name": "elapsed_segments",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        1
+      ],
+      "role": "IGNORED_COMPATIBILITY_INPUT",
+      "semantics": "Accepted only so the existing 7-input runtime interface is unchanged. Has no path to any output; outputs must be bit-identical for any finite value. Carries no time meaning and must not be described as a model feature."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "personal_bp",
+      "dtype": "float32",
+      "shape": [
+        "batch",
+        2
+      ],
+      "semantics": "[SBP, DBP] absolute mmHg"
+    }
+  ],
+  "elapsed_segments_unit": {
+    "status": "RETIRED_FOR_MODEL_SEMANTICS",
+    "note": "The runtime may keep computing elapsed_seconds/10 for interface compatibility and logging. Calibration age is enforced only by Hardware_integration_ready expiry policy (4 h warning, 6 h expiry), which is an operational rule, not a validated accuracy range.",
+    "history": "In 1.0.0 the model consumed elapsed_segments; training used MIMIC-BP row-index differences 0..29 (gate7 data.py:107) with no timestamps, while runtime used seconds/10 (max30102.py:178). That mismatch is why 1.1.0 removes the dependency."
+  },
+  "export_parity": {
+    "tolerance_max_abs_mmhg": 0.002,
+    "basis": "Existing export evidence results/ONNX_EXPORT_PARITY_REPORT.json for the deployed ensemble: CUDA torch vs ORT CPU, 8 validation rows, max_abs_diff 0.001068, mean 0.000276 (seed42 single: 0.000961). Tolerance = 2x the observed ensemble max, rounded; same device pairing (CUDA torch reference, ORT CPU), opset 17, same 8-row non-sealed validation sample plus full-validation agreement report.",
+    "additional_exact_checks": [
+      "absolute_heads outputs bit-identical to model cb320a28... on identical inputs (both run in ORT CPU)",
+      "personal_bp bit-identical for elapsed_segments in {0, 1e4} over the full validation split"
+    ]
+  },
+  "claim_limit": "Development acceptance on the MIMIC-BP validation split (also used for epoch selection) is development evidence only. It does not establish the project's <=5 mmHg physical BP target on the VN-002 dorsal-hand MAX30102 sensor, and does not validate accuracy across hours.",
+  "verified_by": {
+    "sha256_recomputed_after_copy_into_bundle": true,
+    "scratch_integration_only": true
+  }
+}

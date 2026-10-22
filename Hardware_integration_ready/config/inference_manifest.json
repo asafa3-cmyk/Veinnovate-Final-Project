@@ -1,0 +1,89 @@
+{
+  "_comment": "VeinNet PersonalDelta contract, verified against the authoritative Gate 7 research repository during Hardware_integration_ready bundle creation (2026-09-01). Supersedes the source repo's config/inference_manifest.json H0.5 UNVERIFIED_UNSOURCED finding, which resulted from inspecting only the hardware repo and the nested public models/veinnet comparison repo, not the full model research workspace.",
+
+  "verification_status": "VERIFIED_AGAINST_AUTHORITATIVE_ARTIFACT",
+  "verified_at": "2026-09-01",
+  "verification_method": "Direct SHA-256 computation of the .onnx file, direct inspection of the ONNX export parity report, and direct reading of the exporter source that produced the artifact.",
+
+  "authoritative_source": {
+    "repository": "Veinnet_ResNet-34_and_MIMIC-|||_Project/gate7_max30102_personaldelta (research workspace, sibling of this repo, not part of veinnovate-hardware-core)",
+    "onnx_artifact_relative_path": "gate7_max30102_personaldelta/results/personaldelta_ensemble_42_43_44.onnx",
+    "onnx_artifact_bytes": 5835701,
+    "supporting_files": [
+      "gate7_max30102_personaldelta/export_onnx.py",
+      "gate7_max30102_personaldelta/models.py",
+      "gate7_max30102_personaldelta/results/ONNX_EXPORT_PARITY_REPORT.json",
+      "gate7_max30102_personaldelta/results/FINAL_ARTIFACT_BUNDLE_MANIFEST.json"
+    ],
+    "_note": "This bundle (Hardware_integration_ready) does not and must not contain the ONNX file itself. It is supplied at runtime by the sibling VeinNet_integration_ready component; see sibling_paths.example.json."
+  },
+
+  "model": {
+    "name": "VeinNet PersonalDelta (3-head ensemble, shared frozen encoder; seeds 42/43/44)",
+    "onnx_opset": 17,
+    "onnx_opset_source": "Computed directly from the ONNX graph's opset_import during verification, and cross-confirmed against ONNX_EXPORT_PARITY_REPORT.json ('opset': 17).",
+    "expected_sha256": "1f017653c5c4bba4ee1a96e97e18d4c97f672ce32f98c0e60f3bd31a5eb06e03",
+    "expected_sha256_source": "Computed directly via `shasum -a 256` against results/personaldelta_ensemble_42_43_44.onnx during verification; matches ONNX_EXPORT_PARITY_REPORT.json 'onnx_sha256' and FINAL_ARTIFACT_BUNDLE_MANIFEST.json item sha256 exactly."
+  },
+
+  "io_contract": {
+    "inputs": {
+      "ppg": "[B,3,1000] float32",
+      "morphology": "[B,13] float32",
+      "baseline_ppg": "[B,3,1000] float32",
+      "baseline_morphology": "[B,13] float32",
+      "demographics": "[B,4] float32",
+      "baseline_cuff": "[B,2] float32",
+      "elapsed_segments": "[B,1] float32"
+    },
+    "input_order_source": "export_onnx.py export_and_check(): input_names = [\"ppg\", \"morphology\", \"baseline_ppg\", \"baseline_morphology\", \"demographics\", \"baseline_cuff\", \"elapsed_segments\"]. Shapes cross-confirmed against ONNX_EXPORT_PARITY_REPORT.json input_shapes (batch dim 8 in the parity run; batch is dynamic per dynamic_axes).",
+    "demographics_order": ["age_z", "is_female", "age_missing", "sex_missing"],
+    "demographics_order_source": "gate7_max30102_personaldelta/demographics.py FEATURE_NAMES, verified identical to the integration spec's asserted order.",
+    "output": {
+      "name": "personal_bp",
+      "shape": "[B,2] float32",
+      "order": ["SBP", "DBP"],
+      "semantics": "ABSOLUTE, not delta.",
+      "semantics_source": "export_onnx.py PersonalDeltaExportEnsemble.forward(): 'mean_delta = torch.stack(deltas, dim=0).mean(dim=0); return baseline_cuff + mean_delta'. The addition happens INSIDE the exported graph — output_names=[\"personal_bp\"] is the absolute SBP/DBP tensor, not a delta requiring further host-side addition. Cross-confirmed by ONNX_EXPORT_PARITY_REPORT.json sample outputs (~102/52 mmHg range, consistent with absolute BP, not a near-zero delta)."
+    },
+    "acquisition_window": {
+      "duration_s": 30,
+      "effective_rate_hz": 100,
+      "samples_per_channel": 3000,
+      "window_layout": "3 contiguous windows x 1000 samples"
+    }
+  },
+
+  "preprocessing_and_features": {
+    "_status": "Owned by the sibling VeinNet_integration_ready component, not this hardware-edge bundle. This bundle performs no filtering/resampling/normalization on samples destined for the model (spec S1/S3) — protocol/window/SQI code here operates on raw RED/IR only.",
+    "preprocessing_normalization": "band-pass 0.5-8Hz, robust MAD normalization, reshape to [3,1000] per the integration spec; exact implementation lives in VeinNet_integration_ready.",
+    "morphology_feature_definitions": "13-feature vector; exact definitions and normalization stats live in VeinNet_integration_ready, not sourced in this manifest."
+  },
+
+  "versions": {
+    "preprocessing_version": "veinnet-max30102-preprocessing-contract-1.0.1",
+    "morphology_version": "veinnet-morphology-contract-1.0.0",
+    "sqi_version": "veinnet-max30102-preprocessing-contract-1.0.1",
+    "calibration_version": "1.0.0",
+    "_note": "Active production values are read by VeinNetSiblingAdapter from the sibling runtime's frozen preprocessing and morphology contracts."
+  },
+
+  "runtime_verification_requirements": {
+    "_comment": "Enforced authoritatively by the installed sibling veinnet_runtime package at every production startup. receiver/veinnet_sibling_adapter.py calls VeinNetRuntime.load(), which verifies the real artifact hash and loaded ONNX I/O contract before BLE starts. receiver/model_runtime.py contains protocols/data containers only.",
+    "sha256_check": "mandatory, exact match required, fail closed",
+    "opset_check": "mandatory, exact match (17) required, fail closed",
+    "input_names_and_order_check": "mandatory, exact match required, fail closed",
+    "output_name_check": "mandatory, exact match ('personal_bp') required, fail closed",
+    "on_any_mismatch": "raise ModelRuntimeUnavailable; production inference must not proceed; no mock/fallback model may be substituted silently"
+  },
+
+  "superseded_contract": {
+    "_note": "Recorded for traceability only. Do not use.",
+    "ppg_shape": "(B,K=32,1,1250)",
+    "sample_rate_hz": 125,
+    "morphology_shape": "(B,K,13)",
+    "demographics_shape": "(B,9)",
+    "calibration_field": "reference_bp (B,2), passed directly into the head rather than as a delta anchor",
+    "inference_mode": "direct PyTorch (not ONNX) OR opset-16 ONNX via the blocked flash_exporter.py"
+  }
+}

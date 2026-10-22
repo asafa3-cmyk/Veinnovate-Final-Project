@@ -1,0 +1,23 @@
+# VeinNet_integration_ready runtime dependency lock -- CANDIDATE, not yet
+# Jetson-validated. Target: Jetson Orin Nano (aarch64), Python >=3.10
+# (veinnet_runtime uses PEP 604 union type hints, e.g. `str | Path`; the
+# JetPack-provided interpreter must satisfy this).
+#
+# These pins match the exact export/parity environment recorded in
+# contracts/export_provenance.json (x86_64 CUDA workstation), and have been
+# re-verified to install and pass all tests on a second machine (macOS
+# arm64, Python 3.12.5) via:
+#   python -m pip install -r requirements.lock.txt -r requirements-test.lock.txt
+#   python -m pytest tests/ -q
+#
+# Jetson aarch64 wheel availability for these exact pins has NOT been
+# verified -- see contracts/dependency_lock.json "jetson_platform_verification":
+# "pending". Validate against the JetPack-provided onnxruntime build (often
+# onnxruntime-gpu with TensorRT/CUDA execution providers) before shipping,
+# and re-run tests/ on the target device.
+#
+# PyTorch is intentionally NOT listed: the ONNX graph contains the frozen
+# weights, and .pt checkpoints are not a runtime dependency of this bundle.
+numpy==2.4.6
+scipy==1.17.1
+onnxruntime==1.29.0

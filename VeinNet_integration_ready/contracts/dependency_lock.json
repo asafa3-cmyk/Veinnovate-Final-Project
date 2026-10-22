@@ -1,0 +1,20 @@
+{
+  "schema": "veinnet_runtime_dependency_lock_v1",
+  "contract_version": "1.1.0",
+  "target_platform": "jetson_orin_nano_aarch64",
+  "python_requires": ">=3.10",
+  "python_requires_reason": "veinnet_runtime uses PEP 604 union type hints (e.g. `str | Path`, `float | int | None`), which require Python 3.10+ to be a supported/declared target even though `from __future__ import annotations` defers their evaluation at import time. The package must not claim compatibility with a Python version its syntax is not declared to support.",
+  "candidate_runtime_lock": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "onnxruntime": "1.29.0"
+  },
+  "candidate_runtime_lock_note": "These are the exact numpy/scipy/onnxruntime versions used for this ONNX's export/parity run on an x86_64 CUDA workstation (see export_provenance.json), re-verified to install and pass all tests on this development machine (macOS arm64, Python 3.12.5) via requirements.lock.txt + requirements-test.lock.txt. They are a CANDIDATE runtime set for Jetson, not a validated Jetson lock.",
+  "excluded_dependencies": {
+    "torch": "Not a runtime dependency. The ONNX graph contains the frozen weights; PyTorch checkpoints (.pt) are training-time artifacts only and are not shipped in or required by this bundle."
+  },
+  "jetson_platform_verification": "pending",
+  "jetson_platform_verification_note": "The candidate_runtime_lock versions above have NOT been installed or tested on Jetson Orin Nano aarch64 / the target JetPack release -- this must not be assumed or described as validated. Before shipping: (1) confirm a compatible onnxruntime build for the target JetPack release (JetPack images typically ship a JetPack-specific onnxruntime-gpu wheel with TensorRT/CUDA execution providers, which may pin a different onnxruntime version than 1.29.0), (2) confirm numpy/scipy wheels are available for that Python/JetPack combination (JetPack's system Python is commonly 3.8-3.10 depending on release -- confirm it satisfies python_requires >=3.10), (3) re-run every test in tests/ against the actual Jetson interpreter before deployment. Only after that pass may jetson_platform_verification be changed from \"pending\".",
+  "requirements_lock_file": "requirements.lock.txt",
+  "test_requirements_lock_file": "requirements-test.lock.txt"
+}

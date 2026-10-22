@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "stage9_informational_baseline_disposition",
+  "experiment_id": "STAGE9-VN001-DORSAL-OAAT-001",
+  "hardware_uid": "A90AFDAF672D66F1",
+  "short_code": "VN-001",
+  "base_plan_sha256": "dd4c3307835f983494849abde5b8d90f79fb4dc40a1926810b8c430d5499c61c",
+  "config_id": 16,
+  "planned_slots_disposed": 3,
+  "disposition": "INFORMATIONAL_LOW_PSNR_BASELINE_NOT_ACCEPTED",
+  "next_config_id": 17,
+  "attempts": [
+    {
+      "baseline_sequence": 1,
+      "source_slot_repetition": 1,
+      "attempt_id": "transport-VN-001-c16-r01-20260907T125521933714Z-4c202b56",
+      "diagnostic_sha256": "3bdb414b0899ca34ab3ec496fab64dbff5169743f66f8394ad6ebe8cdec58b2e",
+      "reason": "LOW_PSNR"
+    },
+    {
+      "baseline_sequence": 2,
+      "source_slot_repetition": 1,
+      "attempt_id": "transport-VN-001-c16-r01-20260907T130816910460Z-b6cbba11",
+      "diagnostic_sha256": "fe095b470c53f4a90381ed8ef575759799b325193a8d5383727a3ba5aac6f556",
+      "reason": "LOW_PSNR"
+    },
+    {
+      "baseline_sequence": 3,
+      "source_slot_repetition": 1,
+      "attempt_id": "transport-VN-001-c16-r01-20260907T132607449997Z-9e114d73",
+      "diagnostic_sha256": "e584f0d645e911e72c8dd000bfbb521aa29774ead1d4c36efbac54de3dcd64e6",
+      "reason": "LOW_PSNR"
+    }
+  ]
+}

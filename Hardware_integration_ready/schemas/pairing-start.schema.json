@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pairing-start.schema.json",
+  "title": "Pairing start request - identity contract 2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "first_name",
+    "last_name",
+    "national_id",
+    "age_years",
+    "sex"
+  ],
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "last_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "national_id": {
+      "type": "string",
+      "pattern": "^[0-9]{1,9}$"
+    },
+    "age_years": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 130
+    },
+    "sex": {
+      "enum": [
+        "F",
+        "M"
+      ]
+    },
+    "department": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 50
+    },
+    "bed": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 50
+    }
+  }
+}
